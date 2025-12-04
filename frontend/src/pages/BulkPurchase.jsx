@@ -9,8 +9,8 @@ export default function BulkPurchase() {
   const [selectedStates, setSelectedStates] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [purchaseMode, setPurchaseMode] = useState('states'); // 'states', 'setter', 'closer'
-  const [selectedSetters, setSelectedSetters] = useState([]); // NEW: For bulk setter purchase
-  const [setterSearchTerm, setSetterSearchTerm] = useState(''); // NEW: Search setters
+  const [selectedSetters, setSelectedSetters] = useState([]);
+  const [setterSearchTerm, setSetterSearchTerm] = useState('');
 
   // Fetch all states
   const { data: statesData, isLoading } = useQuery({
@@ -21,14 +21,14 @@ export default function BulkPurchase() {
     }
   });
 
-  // NEW: Fetch GHL users for setter purchase
+  // Fetch GHL users for setter purchase
   const { data: usersData, isLoading: usersLoading } = useQuery({
     queryKey: ['ghl-users'],
     queryFn: async () => {
       const response = await ghlApi.getUsers();
       return response.data;
     },
-    enabled: purchaseMode === 'setter' // Only fetch when on setter mode
+    enabled: purchaseMode === 'setter'
   });
 
   const queryClient = useQueryClient();
@@ -40,7 +40,7 @@ export default function BulkPurchase() {
       const response = await numbersApi.getAllNumbers();
       return response.data;
     },
-    refetchInterval: 10000 // Refresh every 10 seconds
+    refetchInterval: 10000
   });
 
   // Helper function to format time ago
@@ -61,13 +61,13 @@ export default function BulkPurchase() {
     }
   };
 
-  // Filter numbers purchased in last 12 hours (changed from 24)
+  // Filter numbers purchased in last 12 hours
   const recentPurchases = (numbersData?.numbers?.filter(num => {
     const purchaseDate = new Date(num.dateCreated);
     const now = new Date();
     const hoursDiff = (now - purchaseDate) / (1000 * 60 * 60);
-    return hoursDiff <= 12; // Changed from 24 to 12 hours
-  }) || []).sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated)); // Sort newest first
+    return hoursDiff <= 12;
+  }) || []).sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
 
   // Helper function to determine role
   const getNumberRole = (phoneNumber) => {
@@ -88,7 +88,7 @@ export default function BulkPurchase() {
       const summary = data.data.summary;
       alert(`Success! Purchased ${summary.purchased} numbers for ${summary.purchased} states`);
       setSelectedStates([]);
-      queryClient.invalidateQueries(['numbers']); // Refresh numbers list
+      queryClient.invalidateQueries(['numbers']);
     },
     onError: (error) => {
       alert(`Failed: ${error.response?.data?.error || error.message}`);
@@ -101,14 +101,14 @@ export default function BulkPurchase() {
     onSuccess: (data) => {
       const number = data.data.number;
       alert(`Success! Purchased ${number.phoneNumber}\n\nNumber SID: ${number.sid}\n\nYou can now assign this to a user in GHL.`);
-      queryClient.invalidateQueries(['numbers']); // Refresh numbers list
+      queryClient.invalidateQueries(['numbers']);
     },
     onError: (error) => {
       alert(`Failed: ${error.response?.data?.error || error.message}`);
     }
   });
 
-  // NEW: Bulk setter purchase mutation
+  // Bulk setter purchase mutation
   const bulkSetterPurchaseMutation = useMutation({
     mutationFn: (users) => numbersApi.bulkPurchaseSetters(users),
     onSuccess: (data) => {
@@ -127,7 +127,7 @@ export default function BulkPurchase() {
       
       alert(message);
       setSelectedSetters([]);
-      queryClient.invalidateQueries(['numbers']); // Refresh numbers list
+      queryClient.invalidateQueries(['numbers']);
     },
     onError: (error) => {
       alert(`Failed: ${error.response?.data?.error || error.message}`);
@@ -150,7 +150,6 @@ export default function BulkPurchase() {
     }
   };
 
-  // NEW: Setter selection handlers
   const handleSetterToggle = (userId) => {
     setSelectedSetters(prev => 
       prev.includes(userId) 
@@ -191,11 +190,10 @@ export default function BulkPurchase() {
 
     quickPurchaseMutation.mutate({ 
       areaCode, 
-      friendlyName: null // Will auto-generate
+      friendlyName: null
     });
   };
 
-  // NEW: Bulk setter purchase handler
   const handleBulkSetterPurchase = () => {
     if (selectedSetters.length === 0) {
       alert('Please select at least one setter');
@@ -224,7 +222,6 @@ export default function BulkPurchase() {
     state.name.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
-  // NEW: Filter setters by search term
   const filteredSetters = (usersData?.users || []).filter(user => {
     const name = user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim();
     const email = user.email || '';
@@ -244,149 +241,125 @@ export default function BulkPurchase() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-3xl font-bold text-gray-900">Bulk Purchase</h2>
-        <p className="mt-2 text-gray-600">
+        <h2 className="text-lg font-semibold text-gray-900">Bulk Purchase</h2>
+        <p className="mt-1 text-sm text-gray-600">
           Purchase phone numbers for states, setters, or closers
         </p>
       </div>
 
-      {/* Purchase Mode Selector - NEW */}
-      <div className="bg-white shadow rounded-lg p-4">
-        <div className="flex items-center space-x-2">
-          <ShoppingCart className="h-5 w-5 text-gray-400" />
-          <span className="text-sm font-medium text-gray-700">Purchase Type:</span>
+      {/* Purchase Mode Selector */}
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="flex items-center space-x-2 mb-3">
+          <div className="p-1 bg-gray-100 rounded">
+            <ShoppingCart className="h-3.5 w-3.5 text-gray-600" strokeWidth={2} />
+          </div>
+          <span className="text-xs font-semibold text-gray-900">Purchase Type</span>
         </div>
-        <div className="flex gap-3 mt-3">
+        
+        <div className="inline-flex rounded-lg border border-gray-200 p-0.5 bg-gray-50">
           <button
             onClick={() => setPurchaseMode('states')}
-            className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
               purchaseMode === 'states'
-                ? 'bg-indigo-600 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <div className="flex items-center justify-center">
-              <Phone className="h-5 w-5 mr-2" />
-              State Numbers
-            </div>
-            <div className="text-xs mt-1 opacity-75">50 US States</div>
+            State Numbers
           </button>
           
           <button
             onClick={() => setPurchaseMode('setter')}
-            className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
               purchaseMode === 'setter'
-                ? 'bg-purple-600 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <div className="flex items-center justify-center">
-              <Users className="h-5 w-5 mr-2" />
-              Setter (510)
-            </div>
-            <div className="text-xs mt-1 opacity-75">Area code 510</div>
+            Setter (510)
           </button>
           
           <button
             onClick={() => setPurchaseMode('closer')}
-            className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
               purchaseMode === 'closer'
-                ? 'bg-orange-600 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <div className="flex items-center justify-center">
-              <Users className="h-5 w-5 mr-2" />
-              Closer (650)
-            </div>
-            <div className="text-xs mt-1 opacity-75">Area code 650</div>
+            Closer (650)
           </button>
         </div>
       </div>
 
-      {/* Quick Purchase for Setters/Closers - ENABLED */}
+      {/* Quick Purchase for Setters/Closers */}
       {purchaseMode !== 'states' && (
-        <div className="bg-white shadow rounded-lg p-6">
-          <div className={`border-l-4 ${
-            purchaseMode === 'setter' ? 'border-purple-500' : 'border-orange-500'
-          } pl-4`}>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Quick Purchase: {purchaseMode === 'setter' ? 'Setter (510)' : 'Closer (650)'}
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Purchase a phone number with area code {purchaseMode === 'setter' ? '510' : '650'}
-            </p>
-            
-            <div className={`${
-              purchaseMode === 'setter' ? 'bg-purple-50 border-purple-200' : 'bg-orange-50 border-orange-200'
-            } border rounded-lg p-4 mb-4`}>
-              <div className="flex items-start">
-                <CheckCircle className={`h-5 w-5 ${
-                  purchaseMode === 'setter' ? 'text-purple-600' : 'text-orange-600'
-                } mr-2 mt-0.5`} />
-                <div className="text-sm text-gray-800">
-                  <p className="font-medium">Ready to Purchase!</p>
-                  <p className="mt-1">
-                    Click the button below to instantly purchase a {purchaseMode === 'setter' ? '510' : '650'} number. 
-                    After purchase, assign it to a user in the GHL Integration tab.
-                  </p>
-                </div>
-              </div>
+        <div className="bg-white border border-gray-200 rounded-lg p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900">
+                Quick Purchase: {purchaseMode === 'setter' ? 'Setter (510)' : 'Closer (650)'}
+              </h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Purchase one {purchaseMode === 'setter' ? '510' : '650'} number instantly
+              </p>
             </div>
-
+            
             <button
               onClick={handleQuickPurchase}
               disabled={quickPurchaseMutation.isPending}
-              className={`w-full px-6 py-3 ${
-                purchaseMode === 'setter' 
-                  ? 'bg-purple-600 hover:bg-purple-700' 
-                  : 'bg-orange-600 hover:bg-orange-700'
-              } text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center shadow-sm"
             >
               {quickPurchaseMutation.isPending ? (
                 <>
-                  <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                  <Loader2 className="animate-spin h-4 w-4 mr-2" strokeWidth={2} />
                   Purchasing...
                 </>
               ) : (
                 <>
-                  <ShoppingCart className="h-5 w-5 mr-2" />
-                  Purchase 1 {purchaseMode === 'setter' ? 'Setter' : 'Closer'} Number
+                  <ShoppingCart className="h-4 w-4 mr-2" strokeWidth={2} />
+                  Purchase Number
                 </>
               )}
             </button>
           </div>
+          
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+            <p className="text-xs text-gray-600">
+              After purchase, assign the number to a user in the GHL Integration tab.
+            </p>
+          </div>
         </div>
       )}
 
-      {/* BULK SETTER PURCHASE - NEW SECTION */}
+      {/* BULK SETTER PURCHASE */}
       {purchaseMode === 'setter' && (
         <>
           {/* Purchase Summary for Setters */}
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-purple-800 font-medium">
+                <p className="text-sm text-gray-900 font-semibold">
                   {selectedSetters.length} setter{selectedSetters.length !== 1 ? 's' : ''} selected
                 </p>
-                <p className="text-xs text-purple-600 mt-1">
-                  {selectedSetters.length} 510 number{selectedSetters.length !== 1 ? 's' : ''} will be purchased
+                <p className="text-xs text-gray-600 mt-0.5">
+                  {selectedSetters.length} number{selectedSetters.length !== 1 ? 's' : ''} will be purchased
                 </p>
               </div>
               <button
                 onClick={handleBulkSetterPurchase}
                 disabled={selectedSetters.length === 0 || bulkSetterPurchaseMutation.isPending}
-                className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center transition-colors"
+                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center text-sm font-semibold transition-colors shadow-sm"
               >
                 {bulkSetterPurchaseMutation.isPending ? (
                   <>
-                    <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                    <Loader2 className="animate-spin h-4 w-4 mr-2" strokeWidth={2} />
                     Purchasing...
                   </>
                 ) : (
                   <>
-                    <ShoppingCart className="h-5 w-5 mr-2" />
-                    Purchase {selectedSetters.length} Number{selectedSetters.length !== 1 ? 's' : ''}
+                    <ShoppingCart className="h-4 w-4 mr-2" strokeWidth={2} />
+                    Purchase {selectedSetters.length}
                   </>
                 )}
               </button>
@@ -394,21 +367,21 @@ export default function BulkPurchase() {
           </div>
 
           {/* Search & Select All for Setters */}
-          <div className="bg-white shadow rounded-lg p-4">
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search setters by name or email..."
                   value={setterSearchTerm}
                   onChange={(e) => setSetterSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               <button
                 onClick={handleSelectAllSetters}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >
                 {selectedSetters.length === (usersData?.users || []).length ? 'Deselect All' : 'Select All'}
               </button>
@@ -416,15 +389,15 @@ export default function BulkPurchase() {
           </div>
 
           {/* Setters Grid */}
-          <div className="bg-white shadow rounded-lg p-6">
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
             {usersLoading ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="animate-spin h-8 w-8 text-purple-600" />
+                <Loader2 className="animate-spin h-8 w-8 text-blue-600" />
                 <span className="ml-3 text-gray-600">Loading GHL users...</span>
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
                   {filteredSetters.map((user) => {
                     const userId = user.id || user.userId || user.ghlUserId;
                     const userName = user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim();
@@ -434,26 +407,36 @@ export default function BulkPurchase() {
                     return (
                       <label
                         key={userId}
-                        className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                        className={`group relative flex items-center px-3.5 py-3 rounded-lg cursor-pointer transition-all duration-200 ${
                           isSelected
-                            ? 'border-purple-500 bg-purple-50'
-                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                            ? 'bg-gradient-to-br from-blue-50 to-blue-100/50 border-l-4 border-blue-500 shadow-sm'
+                            : 'bg-white border border-gray-200 hover:border-blue-400 hover:shadow-md hover:-translate-y-0.5'
                         }`}
                       >
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => handleSetterToggle(userId)}
-                          className="h-4 w-4 text-purple-600 rounded focus:ring-purple-500"
-                        />
-                        <div className="ml-3 flex-1">
-                          <p className="font-semibold text-gray-900">{userName}</p>
-                          <p className="text-xs text-gray-500 truncate">
+                        <div className={`flex-shrink-0 mr-3 p-1.5 rounded-md transition-colors ${
+                          isSelected ? 'bg-blue-500' : 'bg-gray-100 group-hover:bg-blue-100'
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleSetterToggle(userId)}
+                            className="h-3.5 w-3.5 text-blue-600 border-0 rounded focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
+                          />
+                        </div>
+                        
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm font-semibold truncate transition-colors ${
+                            isSelected ? 'text-blue-900' : 'text-gray-900 group-hover:text-blue-700'
+                          }`}>
+                            {userName}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate mt-0.5">
                             {userEmail}
                           </p>
                         </div>
+                        
                         {isSelected && (
-                          <CheckCircle className="h-5 w-5 text-purple-600" />
+                          <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0 ml-2" strokeWidth={2.5} />
                         )}
                       </label>
                     );
@@ -461,8 +444,12 @@ export default function BulkPurchase() {
                 </div>
 
                 {filteredSetters.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
-                    {setterSearchTerm ? 'No setters match your search' : 'No GHL users found'}
+                  <div className="text-center py-16">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                      <Search className="h-8 w-8 text-gray-400" />
+                    </div>
+                    <p className="text-sm font-medium text-gray-900">No setters found</p>
+                    <p className="text-xs text-gray-500 mt-1">Try adjusting your search</p>
                   </div>
                 )}
               </>
@@ -505,73 +492,68 @@ export default function BulkPurchase() {
         </>
       )}
 
-      {/* Recent Purchases Summary - ENHANCED */}
+      {/* Recent Purchases Summary */}
       {recentPurchases.length > 0 && (
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Recent Purchases</h3>
-              <p className="text-sm text-gray-500">Last 12 hours</p>
+              <h3 className="text-sm font-semibold text-gray-900">Recent Purchases</h3>
+              <p className="text-xs text-gray-500 mt-0.5">Last 12 hours</p>
             </div>
-            <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+            <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full">
               {recentPurchases.length} total
             </span>
           </div>
 
-          {/* Role Breakdown - NEW */}
+          {/* Role Breakdown */}
           <div className="grid grid-cols-3 gap-3 mb-4">
-            <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 text-center">
-              <p className="text-2xl font-bold text-purple-600">{recentSetters}</p>
-              <p className="text-xs text-purple-700 mt-1">Setters (510)</p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+              <p className="text-xl font-semibold text-blue-600">{recentSetters}</p>
+              <p className="text-xs text-gray-600 mt-0.5">Setters (510)</p>
             </div>
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 text-center">
-              <p className="text-2xl font-bold text-orange-600">{recentClosers}</p>
-              <p className="text-xs text-orange-700 mt-1">Closers (650)</p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+              <p className="text-xl font-semibold text-blue-600">{recentClosers}</p>
+              <p className="text-xs text-gray-600 mt-0.5">Closers (650)</p>
             </div>
-            <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 text-center">
-              <p className="text-2xl font-bold text-indigo-600">{recentStates}</p>
-              <p className="text-xs text-indigo-700 mt-1">State Numbers</p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+              <p className="text-xl font-semibold text-blue-600">{recentStates}</p>
+              <p className="text-xs text-gray-600 mt-0.5">State Numbers</p>
             </div>
           </div>
           
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {recentPurchases.map((number) => {
               const role = getNumberRole(number.phoneNumber);
-              const roleColors = {
-                setter: 'bg-purple-50 border-purple-200',
-                closer: 'bg-orange-50 border-orange-200',
-                state: 'bg-indigo-50 border-indigo-200'
-              };
               const roleBadges = {
-                setter: <span className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full">Setter (510)</span>,
-                closer: <span className="text-xs px-2 py-1 bg-orange-100 text-orange-700 rounded-full">Closer (650)</span>,
-                state: <span className="text-xs px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">State</span>
+                setter: <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium">Setter</span>,
+                closer: <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium">Closer</span>,
+                state: <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-700 rounded-full font-medium">State</span>
               };
 
               return (
                 <div
                   key={number.sid}
-                  className={`flex items-center justify-between p-3 border rounded-lg ${roleColors[role]}`}
+                  className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-center">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
-                    <div>
+                  <div className="flex items-center min-w-0 flex-1">
+                    <CheckCircle className="h-4 w-4 text-green-600 mr-3 flex-shrink-0" strokeWidth={2} />
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <p className="font-mono font-semibold text-gray-900">
+                        <p className="font-mono text-sm font-semibold text-gray-900 truncate">
                           {number.phoneNumber}
                         </p>
                         {roleBadges[role]}
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-xs text-gray-600 truncate mt-0.5">
                         {number.friendlyName || 'No name'}
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right ml-4 flex-shrink-0">
                     <p className="text-xs text-gray-500">
                       {new Date(number.dateCreated).toLocaleString()}
                     </p>
-                    <p className="text-xs text-green-600 font-medium">
+                    <p className="text-xs text-green-600 font-medium mt-0.5">
                       {formatTimeAgo(number.dateCreated)}
                     </p>
                   </div>
@@ -582,34 +564,34 @@ export default function BulkPurchase() {
         </div>
       )}
 
-      {/* State Purchase Section - Only show when mode is 'states' */}
+      {/* State Purchase Section */}
       {purchaseMode === 'states' && (
         <>
           {/* Purchase Summary */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-blue-800 font-medium">
+                <p className="text-sm text-gray-900 font-semibold">
                   {selectedStates.length} state{selectedStates.length !== 1 ? 's' : ''} selected
                 </p>
-                <p className="text-xs text-blue-600 mt-1">
+                <p className="text-xs text-gray-600 mt-0.5">
                   {selectedStates.length} number{selectedStates.length !== 1 ? 's' : ''} will be purchased
                 </p>
               </div>
               <button
                 onClick={handlePurchase}
                 disabled={selectedStates.length === 0 || purchaseMutation.isPending}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center transition-colors"
+                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center text-sm font-semibold transition-colors shadow-sm"
               >
                 {purchaseMutation.isPending ? (
                   <>
-                    <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                    <Loader2 className="animate-spin h-4 w-4 mr-2" strokeWidth={2} />
                     Purchasing...
                   </>
                 ) : (
                   <>
-                    <ShoppingCart className="h-5 w-5 mr-2" />
-                    Purchase {selectedStates.length} Number{selectedStates.length !== 1 ? 's' : ''}
+                    <ShoppingCart className="h-4 w-4 mr-2" strokeWidth={2} />
+                    Purchase {selectedStates.length}
                   </>
                 )}
               </button>
@@ -617,21 +599,21 @@ export default function BulkPurchase() {
           </div>
 
           {/* Search & Select All */}
-          <div className="bg-white shadow rounded-lg p-4">
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search states..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               <button
                 onClick={handleSelectAll}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >
                 {selectedStates.length === statesData?.states.length ? 'Deselect All' : 'Select All'}
               </button>
@@ -639,39 +621,53 @@ export default function BulkPurchase() {
           </div>
 
           {/* States Grid */}
-          <div className="bg-white shadow rounded-lg p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
               {filteredStates.map((state) => (
                 <label
                   key={state.name}
-                  className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                  className={`group relative flex items-center px-3.5 py-3 rounded-lg cursor-pointer transition-all duration-200 ${
                     selectedStates.includes(state.name)
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                      ? 'bg-gradient-to-br from-blue-50 to-blue-100/50 border-l-4 border-blue-500 shadow-sm'
+                      : 'bg-white border border-gray-200 hover:border-blue-400 hover:shadow-md hover:-translate-y-0.5'
                   }`}
                 >
-                  <input
-                    type="checkbox"
-                    checked={selectedStates.includes(state.name)}
-                    onChange={() => handleStateToggle(state.name)}
-                    className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
-                  />
-                  <div className="ml-3 flex-1">
-                    <p className="font-semibold text-gray-900">{state.name}</p>
-                    <p className="text-xs text-gray-500">
+                  <div className={`flex-shrink-0 mr-3 p-1.5 rounded-md transition-colors ${
+                    selectedStates.includes(state.name) ? 'bg-blue-500' : 'bg-gray-100 group-hover:bg-blue-100'
+                  }`}>
+                    <input
+                      type="checkbox"
+                      checked={selectedStates.includes(state.name)}
+                      onChange={() => handleStateToggle(state.name)}
+                      className="h-3.5 w-3.5 text-blue-600 border-0 rounded focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
+                    />
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-semibold truncate transition-colors ${
+                      selectedStates.includes(state.name) ? 'text-blue-900' : 'text-gray-900 group-hover:text-blue-700'
+                    }`}>
+                      {state.name}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">
                       {state.areaCodes.length} area code{state.areaCodes.length !== 1 ? 's' : ''}
                     </p>
                   </div>
+                  
                   {selectedStates.includes(state.name) && (
-                    <CheckCircle className="h-5 w-5 text-blue-600" />
+                    <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0 ml-2" strokeWidth={2.5} />
                   )}
                 </label>
               ))}
             </div>
 
             {filteredStates.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                No states match your search
+              <div className="text-center py-16">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                  <Search className="h-8 w-8 text-gray-400" />
+                </div>
+                <p className="text-sm font-medium text-gray-900">No states found</p>
+                <p className="text-xs text-gray-500 mt-1">Try adjusting your search</p>
               </div>
             )}
           </div>
