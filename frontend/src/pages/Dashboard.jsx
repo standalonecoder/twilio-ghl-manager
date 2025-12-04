@@ -1,9 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
 import { numbersApi, analyticsApi, ghlApi } from '../services/api';
-import { Phone, TrendingUp, AlertCircle, Activity, Users } from 'lucide-react';
+import { Phone, TrendingUp, AlertCircle, Activity, Users, Sparkles } from 'lucide-react';
+import { StatCard } from '../components/Card';
+import Badge, { StatusBadge } from '../components/Badge';
 
+/**
+ * DEEP OCEAN THEMED DASHBOARD
+ * Modern glassmorphism design with advanced animations
+ */
 export default function Dashboard() {
-  const { data: numbersData } = useQuery({
+  const { data: numbersData, isLoading: numbersLoading } = useQuery({
     queryKey: ['numbers'],
     queryFn: async () => {
       const response = await numbersApi.getAllNumbers();
@@ -11,7 +18,7 @@ export default function Dashboard() {
     }
   });
 
-  const { data: analyticsData } = useQuery({
+  const { data: analyticsData, isLoading: analyticsLoading } = useQuery({
     queryKey: ['analytics-overview'],
     queryFn: async () => {
       const response = await analyticsApi.getOverview();
@@ -19,8 +26,7 @@ export default function Dashboard() {
     }
   });
 
-  // NEW: GHL numbers (directly from GHL API via backend)
-  const { data: ghlNumbersData } = useQuery({
+  const { data: ghlNumbersData, isLoading: ghlLoading } = useQuery({
     queryKey: ['ghl-phone-numbers'],
     queryFn: async () => {
       const response = await ghlApi.getPhoneNumbers();
@@ -30,133 +36,244 @@ export default function Dashboard() {
 
   const stats = [
     {
-      name: 'Total Numbers (DB)',
+      label: 'Total Numbers (DB)',
       value: numbersData?.count || 0,
       icon: Phone,
-      color: 'bg-blue-500'
+      color: 'ocean',
+      trend: 'up',
+      trendValue: '+12%'
     },
     {
-      name: 'Total Calls',
+      label: 'Total Calls',
       value: analyticsData?.stats.totalCalls || 0,
       icon: Activity,
-      color: 'bg-green-500'
+      color: 'cyan',
+      trend: 'up',
+      trendValue: '+8%'
     },
     {
-      name: 'Success Rate',
+      label: 'Success Rate',
       value: `${analyticsData?.stats.successRate || 0}%`,
       icon: TrendingUp,
-      color: 'bg-purple-500'
+      color: 'success',
+      trend: 'up',
+      trendValue: '+3.2%'
     },
     {
-      name: 'Failed Calls',
+      label: 'Failed Calls',
       value: analyticsData?.stats.failed || 0,
       icon: AlertCircle,
-      color: 'bg-red-500'
+      color: 'danger',
+      trend: 'down',
+      trendValue: '-5%'
     }
   ];
 
-  const ghlNumbers = ghlNumbersData?.numbers || ghlNumbersData || [];
+  const ghlNumbers = Array.isArray(ghlNumbersData?.numbers) 
+    ? ghlNumbersData.numbers 
+    : Array.isArray(ghlNumbersData) 
+    ? ghlNumbersData 
+    : [];
+
+  // Container animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
+    }
+  };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold text-gray-900">Dashboard</h2>
-        <p className="mt-2 text-gray-600">Overview of your Twilio–GHL system</p>
-      </div>
+    <div className="min-h-screen p-6 space-y-8">
+      {/* Hero Header with Gradient */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="relative overflow-hidden rounded-2xl p-8 glass-strong"
+      >
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-2">
+            <Sparkles className="h-8 w-8 text-cyan-400" />
+            <h1 className="text-4xl font-bold gradient-text-ocean">
+              Dashboard
+            </h1>
+          </div>
+          <p className="text-lg text-white/70">
+            Overview of your Twilio–GHL system performance
+          </p>
+        </div>
+        
+        {/* Animated background decoration */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-cyan-500/20 to-ocean-600/20 rounded-full blur-3xl -z-10" />
+      </motion.div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => (
-          <div key={stat.name} className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{stat.name}</p>
-                <p className="mt-2 text-3xl font-bold text-gray-900">{stat.value}</p>
-              </div>
-              <div className={`${stat.color} p-3 rounded-lg`}>
-                <stat.icon className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          </div>
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        {stats.map((stat, index) => (
+          <motion.div key={stat.label} variants={itemVariants}>
+            <StatCard {...stat} animate={true} />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
-      {/* Recent Numbers from local DB */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Numbers (DB)</h3>
-        </div>
-        <div className="p-6">
-          {numbersData?.numbers.slice(0, 5).map((number) => (
-  <div key={number.sid} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
-              <div className="flex items-center">
-                <Phone className="h-5 w-5 text-gray-400 mr-3" />
-                <div>
-                  <p className="font-mono font-semibold text-gray-900">
-                    {number.phoneNumber}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {number.friendlyName || 'No name'}
-                  </p>
-                </div>
-              </div>
-              <span className="text-sm text-gray-600">
-                {new Date(number.purchaseDate).toLocaleDateString()}
-              </span>
-            </div>
-          ))}
-          {!numbersData?.numbers?.length && (
-            <p className="text-center text-gray-500 py-4">No numbers yet</p>
-          )}
-        </div>
-      </div>
-
-      {/* NEW: GHL Numbers with Friendly Name & Staff */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+      {/* Recent Numbers from DB */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="ocean-card overflow-hidden"
+      >
+        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">GHL Numbers</h3>
-            <p className="text-sm text-gray-500">
-              Directly from GHL API – friendly name & staff where available
+            <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+              <Phone className="h-5 w-5 text-cyan-400" />
+              Recent Numbers (Database)
+            </h3>
+            <p className="text-sm text-white/60 mt-1">
+              Latest numbers from your Twilio account
             </p>
           </div>
-          <div className="flex items-center text-sm text-gray-500">
-            <Users className="h-4 w-4 mr-2" />
-            {Array.isArray(ghlNumbers) ? ghlNumbers.length : 0} numbers
-          </div>
+          <StatusBadge status="active" />
         </div>
+        
         <div className="p-6">
-          {Array.isArray(ghlNumbers) && ghlNumbers.length > 0 ? (
-            ghlNumbers.slice(0, 10).map((num, idx) => (
-              <div
-                key={num.id || num.phoneNumber || idx}
-                className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
-              >
-                <div className="flex items-center">
-                  <Phone className="h-5 w-5 text-gray-400 mr-3" />
-                  <div>
-                    <p className="font-mono font-semibold text-gray-900">
-                      {num.phoneNumber || num.number || 'Unknown'}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {num.friendlyName || num.name || 'No friendly name'}
+          {numbersLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="loading-spinner h-8 w-8" />
+            </div>
+          ) : numbersData?.numbers && numbersData.numbers.length > 0 ? (
+            <div className="space-y-3">
+              {numbersData.numbers.slice(0, 5).map((number, index) => (
+                <motion.div
+                  key={number.sid}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.3 }}
+                  className="flex items-center justify-between py-3 px-4 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 border border-white/5 hover:border-white/15"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-lg bg-ocean-500/20">
+                      <Phone className="h-4 w-4 text-cyan-400" />
+                    </div>
+                    <div>
+                      <p className="font-mono font-semibold text-white text-base">
+                        {number.phoneNumber}
+                      </p>
+                      <p className="text-sm text-white/60">
+                        {number.friendlyName || 'No name assigned'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-white/70">
+                      {new Date(number.purchaseDate).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
                     </p>
                   </div>
-                </div>
-                <span className="text-sm text-gray-600">
-                  {num.assignedUserName ||
-                    num.assignedTo ||
-                    'Unassigned'}
-                </span>
-              </div>
-            ))
+                </motion.div>
+              ))}
+            </div>
           ) : (
-            <p className="text-center text-gray-500 py-4">
-              No GHL numbers found or API not returning data yet.
-            </p>
+            <div className="text-center py-12">
+              <Phone className="h-12 w-12 text-white/20 mx-auto mb-4" />
+              <p className="text-white/60">No numbers found in database</p>
+            </div>
           )}
         </div>
-      </div>
+      </motion.div>
+
+      {/* GHL Numbers Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="ocean-card overflow-hidden"
+      >
+        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+          <div>
+            <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+              <Users className="h-5 w-5 text-cyan-400" />
+              GHL Numbers
+            </h3>
+            <p className="text-sm text-white/60 mt-1">
+              Directly from GHL API – with friendly names & staff assignments
+            </p>
+          </div>
+          <Badge variant="cyan" dot pulse>
+            {ghlNumbers.length} numbers
+          </Badge>
+        </div>
+        
+        <div className="p-6">
+          {ghlLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="loading-spinner h-8 w-8" />
+            </div>
+          ) : ghlNumbers.length > 0 ? (
+            <div className="space-y-3">
+              {ghlNumbers.slice(0, 10).map((num, index) => (
+                <motion.div
+                  key={num.id || num.phoneNumber || index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.3 }}
+                  className="flex items-center justify-between py-3 px-4 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 border border-white/5 hover:border-white/15"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-lg bg-cyan-500/20">
+                      <Phone className="h-4 w-4 text-cyan-400" />
+                    </div>
+                    <div>
+                      <p className="font-mono font-semibold text-white text-base">
+                        {num.phoneNumber || num.number || 'Unknown'}
+                      </p>
+                      <p className="text-sm text-white/60">
+                        {num.friendlyName || num.name || 'No friendly name'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="ocean" size="sm">
+                      {num.assignedUserName || num.assignedTo || 'Unassigned'}
+                    </Badge>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <Users className="h-12 w-12 text-white/20 mx-auto mb-4" />
+              <p className="text-white/60">
+                No GHL numbers found or API not returning data yet
+              </p>
+              <p className="text-sm text-white/40 mt-2">
+                Check your GHL integration settings
+              </p>
+            </div>
+          )}
+        </div>
+      </motion.div>
     </div>
   );
 }

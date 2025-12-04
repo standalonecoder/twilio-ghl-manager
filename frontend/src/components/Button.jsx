@@ -1,115 +1,214 @@
+import { motion } from 'framer-motion';
+import { forwardRef } from 'react';
+
 /**
- * Modern Button Component
- * Professional button styles with variants
+ * DEEP OCEAN THEME - BUTTON COMPONENT
+ * Advanced animated buttons with ocean gradients
  */
 
-export function Button({ 
-  children, 
-  variant = 'primary', 
-  size = 'md', 
-  icon: Icon,
-  iconPosition = 'left',
-  disabled = false,
+const Button = forwardRef(({
+  children,
+  variant = 'primary', // primary, secondary, outline, ghost, danger
+  size = 'md', // sm, md, lg, xl
+  className = '',
   loading = false,
-  onClick,
-  className = '',
-  type = 'button',
-  fullWidth = false
-}) {
-  const baseClasses = 'inline-flex items-center justify-center font-semibold transition-all duration-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
-  
-  const variants = {
-    primary: 'bg-gradient-to-r from-brand-500 to-brand-600 text-white hover:from-brand-600 hover:to-brand-700 shadow-medium hover:shadow-large focus:ring-brand-500',
-    secondary: 'bg-white text-neutral-700 border-2 border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 focus:ring-neutral-500',
-    accent: 'bg-gradient-to-r from-accent-500 to-accent-600 text-white hover:from-accent-600 hover:to-accent-700 shadow-medium hover:shadow-large focus:ring-accent-500',
-    success: 'bg-gradient-to-r from-success-500 to-success-600 text-white hover:from-success-600 hover:to-success-700 shadow-medium hover:shadow-large focus:ring-success-500',
-    warning: 'bg-gradient-to-r from-warning-500 to-warning-600 text-white hover:from-warning-600 hover:to-warning-700 shadow-medium hover:shadow-large focus:ring-warning-500',
-    danger: 'bg-gradient-to-r from-danger-500 to-danger-600 text-white hover:from-danger-600 hover:to-danger-700 shadow-medium hover:shadow-large focus:ring-danger-500',
-    ghost: 'text-neutral-700 hover:bg-neutral-100 focus:ring-neutral-500',
-    outline: 'border-2 border-brand-500 text-brand-600 hover:bg-brand-50 focus:ring-brand-500',
-  };
-
-  const sizes = {
-    sm: 'px-3 py-1.5 text-xs',
-    md: 'px-4 py-2.5 text-sm',
-    lg: 'px-6 py-3 text-base',
-    xl: 'px-8 py-4 text-lg',
-  };
-
-  const widthClass = fullWidth ? 'w-full' : '';
-
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${widthClass} ${className}`}
-    >
-      {loading && (
-        <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-      )}
-      
-      {Icon && !loading && iconPosition === 'left' && (
-        <Icon className={`${size === 'sm' ? 'h-3.5 w-3.5' : size === 'lg' ? 'h-5 w-5' : 'h-4 w-4'} ${children ? 'mr-2' : ''}`} strokeWidth={2.5} />
-      )}
-      
-      {children}
-      
-      {Icon && !loading && iconPosition === 'right' && (
-        <Icon className={`${size === 'sm' ? 'h-3.5 w-3.5' : size === 'lg' ? 'h-5 w-5' : 'h-4 w-4'} ${children ? 'ml-2' : ''}`} strokeWidth={2.5} />
-      )}
-    </button>
-  );
-}
-
-export function IconButton({ 
-  icon: Icon, 
-  variant = 'ghost', 
-  size = 'md',
   disabled = false,
+  icon: Icon,
+  iconPosition = 'left', // left, right
+  fullWidth = false,
+  animate = true,
   onClick,
-  className = '',
-  title
-}) {
-  const baseClasses = 'inline-flex items-center justify-center font-semibold transition-all duration-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  ...props
+}, ref) => {
   
-  const variants = {
-    primary: 'bg-gradient-to-r from-brand-500 to-brand-600 text-white hover:from-brand-600 hover:to-brand-700 shadow-medium hover:shadow-large focus:ring-brand-500',
-    secondary: 'bg-white text-neutral-700 border-2 border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 focus:ring-neutral-500',
-    ghost: 'text-neutral-700 hover:bg-neutral-100 focus:ring-neutral-500',
+  const baseClasses = 'inline-flex items-center justify-center font-semibold transition-all duration-300 ease-smooth focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:ring-offset-2 focus:ring-offset-ocean-950';
+
+  // Variant styles
+  const variantClasses = {
+    primary: 'bg-gradient-to-r from-ocean-600 to-cyan-500 text-white shadow-ocean-md hover:shadow-ocean-lg hover:from-ocean-500 hover:to-cyan-400 active:scale-95',
+    secondary: 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-white/30 active:scale-95',
+    outline: 'bg-transparent text-white border-2 border-cyan-400 hover:bg-cyan-400/10 active:scale-95',
+    ghost: 'bg-transparent text-white hover:bg-white/10 active:scale-95',
+    danger: 'bg-gradient-to-r from-danger-600 to-danger-500 text-white shadow-ocean-md hover:shadow-ocean-lg hover:from-danger-500 hover:to-danger-400 active:scale-95',
   };
 
-  const sizes = {
-    sm: 'p-1.5',
-    md: 'p-2.5',
-    lg: 'p-3',
+  // Size styles
+  const sizeClasses = {
+    sm: 'text-xs px-3 py-1.5 rounded-md',
+    md: 'text-sm px-4 py-2.5 rounded-lg',
+    lg: 'text-base px-6 py-3 rounded-lg',
+    xl: 'text-lg px-8 py-4 rounded-xl',
   };
 
+  // Icon size based on button size
   const iconSizes = {
     sm: 'h-3.5 w-3.5',
     md: 'h-4 w-4',
     lg: 'h-5 w-5',
+    xl: 'h-6 w-6',
+  };
+
+  const widthClass = fullWidth ? 'w-full' : '';
+  const disabledClass = disabled || loading ? 'opacity-50 cursor-not-allowed' : '';
+
+  const combinedClasses = `
+    ${baseClasses}
+    ${variantClasses[variant]}
+    ${sizeClasses[size]}
+    ${widthClass}
+    ${disabledClass}
+    ${className}
+  `.trim().replace(/\s+/g, ' ');
+
+  // Animation variants
+  const buttonVariants = {
+    initial: { scale: 1 },
+    hover: { 
+      scale: 1.02,
+      y: -2,
+      transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] }
+    },
+    tap: { 
+      scale: 0.98,
+      transition: { duration: 0.1 }
+    }
+  };
+
+  const ButtonComponent = animate ? motion.button : 'button';
+  const animationProps = animate ? {
+    variants: buttonVariants,
+    initial: "initial",
+    whileHover: (disabled || loading) ? undefined : "hover",
+    whileTap: (disabled || loading) ? undefined : "tap"
+  } : {};
+
+  return (
+    <ButtonComponent
+      ref={ref}
+      className={combinedClasses}
+      disabled={disabled || loading}
+      onClick={onClick}
+      {...animationProps}
+      {...props}
+    >
+      {loading && (
+        <LoadingSpinner size={size} className={Icon || iconPosition === 'left' ? 'mr-2' : ''} />
+      )}
+      {!loading && Icon && iconPosition === 'left' && (
+        <Icon className={`${iconSizes[size]} mr-2`} strokeWidth={2.5} />
+      )}
+      {children}
+      {!loading && Icon && iconPosition === 'right' && (
+        <Icon className={`${iconSizes[size]} ml-2`} strokeWidth={2.5} />
+      )}
+    </ButtonComponent>
+  );
+});
+
+Button.displayName = 'Button';
+
+/**
+ * Loading Spinner Component
+ */
+function LoadingSpinner({ size = 'md', className = '' }) {
+  const sizeClasses = {
+    sm: 'h-3.5 w-3.5',
+    md: 'h-4 w-4',
+    lg: 'h-5 w-5',
+    xl: 'h-6 w-6',
   };
 
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      title={title}
-      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
-    >
-      <Icon className={iconSizes[size]} strokeWidth={2.5} />
-    </button>
+    <div className={`${sizeClasses[size]} ${className}`}>
+      <div className="loading-spinner h-full w-full" />
+    </div>
   );
 }
 
+/**
+ * Icon Button - Compact button with just an icon
+ */
+export function IconButton({
+  icon: Icon,
+  variant = 'ghost',
+  size = 'md',
+  className = '',
+  ...props
+}) {
+  const sizeClasses = {
+    sm: 'p-1.5',
+    md: 'p-2',
+    lg: 'p-3',
+    xl: 'p-4',
+  };
+
+  const iconSizes = {
+    sm: 'h-4 w-4',
+    md: 'h-5 w-5',
+    lg: 'h-6 w-6',
+    xl: 'h-7 w-7',
+  };
+
+  return (
+    <Button
+      variant={variant}
+      size={size}
+      className={`${sizeClasses[size]} ${className}`}
+      {...props}
+    >
+      <Icon className={iconSizes[size]} strokeWidth={2.5} />
+    </Button>
+  );
+}
+
+/**
+ * Button Group - Group multiple buttons together
+ */
 export function ButtonGroup({ children, className = '' }) {
   return (
-    <div className={`inline-flex rounded-xl shadow-soft overflow-hidden ${className}`}>
+    <div className={`inline-flex rounded-lg shadow-ocean-sm overflow-hidden ${className}`}>
       {children}
     </div>
   );
 }
+
+/**
+ * FAB - Floating Action Button
+ */
+export function FloatingActionButton({
+  icon: Icon,
+  position = 'bottom-right', // bottom-right, bottom-left, top-right, top-left
+  onClick,
+  className = '',
+  ...props
+}) {
+  const positionClasses = {
+    'bottom-right': 'fixed bottom-8 right-8',
+    'bottom-left': 'fixed bottom-8 left-8',
+    'top-right': 'fixed top-8 right-8',
+    'top-left': 'fixed top-8 left-8',
+  };
+
+  return (
+    <motion.button
+      className={`
+        ${positionClasses[position]}
+        bg-gradient-to-br from-ocean-600 to-cyan-500
+        text-white
+        p-4 rounded-full
+        shadow-ocean-2xl
+        hover:shadow-glow-cyan
+        z-50
+        ${className}
+      `}
+      whileHover={{ scale: 1.1, rotate: 90 }}
+      whileTap={{ scale: 0.9 }}
+      onClick={onClick}
+      {...props}
+    >
+      <Icon className="h-6 w-6" strokeWidth={2.5} />
+    </motion.button>
+  );
+}
+
+export default Button;
