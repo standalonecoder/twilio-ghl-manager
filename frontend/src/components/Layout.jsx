@@ -12,8 +12,8 @@ import {
 import Badge from './Badge';
 
 /**
- * DEEP OCEAN THEMED LAYOUT
- * Professional glassmorphism navigation with ocean gradients
+ * MODERN DARK THEMED LAYOUT
+ * Professional glassmorphism navigation with Indigo/Teal accents
  */
 export default function Layout() {
   const navItems = [
@@ -26,19 +26,15 @@ export default function Layout() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ocean-950 via-ocean-900 to-ocean-800 relative overflow-x-hidden">
-      {/* Animated background effect */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-cyan-500/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-0 -right-1/4 w-1/2 h-1/2 bg-ocean-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
-      </div>
+    <div className="min-h-screen bg-white">
+      {/* No background decorations */}
 
-      {/* Glassmorphism Header */}
+      {/* Header */}
       <motion.header 
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="sticky top-0 z-50 glass-strong border-b border-white/10"
+        className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm"
       >
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -49,16 +45,16 @@ export default function Layout() {
                 whileHover={{ rotate: 360 }}
                 transition={{ duration: 0.6 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-ocean-500 rounded-xl blur-lg opacity-50" />
-                <div className="relative bg-gradient-to-br from-ocean-600 to-cyan-500 p-2.5 rounded-xl shadow-ocean-lg">
+                <div className="absolute inset-0 bg-gradient-to-br from-accent-400 to-primary-500 rounded-xl blur-lg opacity-30" />
+                <div className="relative bg-gradient-to-br from-primary-600 to-accent-500 p-2.5 rounded-xl shadow-lg">
                   <Phone className="h-6 w-6 text-white" strokeWidth={2.5} />
                 </div>
               </motion.div>
               <div>
-                <h1 className="text-xl font-bold gradient-text-ocean">
+                <h1 className="text-xl font-bold gradient-text-primary">
                   Twilio-GHL Manager
                 </h1>
-                <p className="text-xs text-white/60 font-medium">
+                <p className="text-xs text-gray-600 font-medium">
                   Enterprise Phone Management System
                 </p>
               </div>
@@ -78,12 +74,12 @@ export default function Layout() {
         </div>
       </motion.header>
 
-      {/* Glassmorphism Navigation */}
+      {/* Navigation */}
       <motion.nav 
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        className="sticky top-[72px] z-40 glass border-b border-white/10"
+        className="sticky top-[72px] z-40 bg-white border-b border-gray-200"
       >
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide py-2">
@@ -100,8 +96,8 @@ export default function Layout() {
                   className={({ isActive }) =>
                     `flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 whitespace-nowrap ${
                       isActive
-                        ? 'bg-gradient-to-r from-ocean-600 to-cyan-500 text-white shadow-ocean-md'
-                        : 'text-white/70 hover:text-white hover:bg-white/10'
+                        ? 'bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-md'
+                        : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
                     }`
                   }
                 >
@@ -115,7 +111,7 @@ export default function Layout() {
                       {isActive && (
                         <motion.div
                           layoutId="activeTab"
-                          className="absolute inset-0 bg-gradient-to-r from-ocean-600 to-cyan-500 rounded-lg -z-10"
+                          className="absolute inset-0 bg-gradient-to-r from-primary-600 to-accent-500 rounded-lg -z-10"
                           transition={{ type: "spring", stiffness: 500, damping: 30 }}
                         />
                       )}
@@ -139,25 +135,25 @@ export default function Layout() {
         </motion.div>
       </main>
 
-      {/* Ocean Wave Footer */}
-      <footer className="relative z-10 mt-16 glass-dark border-t border-white/10">
+      {/* Footer */}
+      <footer className="relative z-10 mt-16 bg-white border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Brand */}
             <div className="flex items-center gap-3">
-              <Waves className="h-5 w-5 text-cyan-400" />
+              <Waves className="h-5 w-5 text-accent-500" />
               <div>
-                <p className="text-sm font-semibold text-white">
+                <p className="text-sm font-semibold text-gray-900">
                   Twilio-GHL Manager
                 </p>
-                <p className="text-xs text-white/60">
+                <p className="text-xs text-gray-500">
                   © 2024 All rights reserved
                 </p>
               </div>
             </div>
 
             {/* Status Info */}
-            <div className="flex items-center gap-6 text-xs text-white/60">
+            <div className="flex items-center gap-6 text-xs text-gray-500">
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 bg-success-500 rounded-full animate-pulse" />
                 <span>Production</span>
@@ -165,14 +161,14 @@ export default function Layout() {
               <span>•</span>
               <span>v1.0.0</span>
               <span>•</span>
-              <span className="hidden sm:inline">Deep Ocean Theme</span>
+              <span className="hidden sm:inline">Clean Light Theme</span>
             </div>
 
             {/* Social/Links (placeholder) */}
             <div className="flex items-center gap-4">
               <motion.a
                 href="#"
-                className="text-white/60 hover:text-cyan-400 transition-colors"
+                className="text-gray-500 hover:text-accent-500 transition-colors"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >

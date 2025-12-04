@@ -232,7 +232,7 @@ export default function BulkPurchase() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="animate-spin h-8 w-8 text-blue-600" />
+        <Loader2 className="animate-spin h-8 w-8 text-accent-400" />
       </div>
     );
   }
@@ -241,14 +241,14 @@ export default function BulkPurchase() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Bulk Purchase</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Bulk Purchase</h2>
         <p className="mt-1 text-sm text-gray-600">
           Purchase phone numbers for states, setters, or closers
         </p>
       </div>
 
       {/* Purchase Mode Selector */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4">
+      <div className="modern-card p-4">
         <div className="flex items-center space-x-2 mb-3">
           <div className="p-1 bg-gray-100 rounded">
             <ShoppingCart className="h-3.5 w-3.5 text-gray-600" strokeWidth={2} />
@@ -261,8 +261,8 @@ export default function BulkPurchase() {
             onClick={() => setPurchaseMode('states')}
             className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
               purchaseMode === 'states'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-md'
+                : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             State Numbers
@@ -272,8 +272,8 @@ export default function BulkPurchase() {
             onClick={() => setPurchaseMode('setter')}
             className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
               purchaseMode === 'setter'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-md'
+                : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             Setter (510)
@@ -283,8 +283,8 @@ export default function BulkPurchase() {
             onClick={() => setPurchaseMode('closer')}
             className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
               purchaseMode === 'closer'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-md'
+                : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             Closer (650)
