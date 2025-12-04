@@ -12,8 +12,8 @@ import {
 import Badge from './Badge';
 
 /**
- * MODERN DARK THEMED LAYOUT
- * Professional glassmorphism navigation with Indigo/Teal accents
+ * MODERN DESIGN WITH GRADIENT NAVBAR
+ * Clean white background with blue-teal gradient navigation
  */
 export default function Layout() {
   const navItems = [
@@ -27,8 +27,6 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* No background decorations */}
-
       {/* Header */}
       <motion.header 
         initial={{ y: -100, opacity: 0 }}
@@ -45,13 +43,13 @@ export default function Layout() {
                 whileHover={{ rotate: 360 }}
                 transition={{ duration: 0.6 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-accent-400 to-primary-500 rounded-xl blur-lg opacity-30" />
-                <div className="relative bg-gradient-to-br from-primary-600 to-accent-500 p-2.5 rounded-xl shadow-lg">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-teal-500 rounded-xl blur-lg opacity-30" />
+                <div className="relative bg-gradient-to-br from-blue-600 to-teal-500 p-2.5 rounded-xl shadow-lg">
                   <Phone className="h-6 w-6 text-white" strokeWidth={2.5} />
                 </div>
               </motion.div>
               <div>
-                <h1 className="text-xl font-bold gradient-text-primary">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">
                   Twilio-GHL Manager
                 </h1>
                 <p className="text-xs text-gray-600 font-medium">
@@ -74,7 +72,7 @@ export default function Layout() {
         </div>
       </motion.header>
 
-      {/* Navigation */}
+      {/* Navigation - White Background */}
       <motion.nav 
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -82,7 +80,7 @@ export default function Layout() {
         className="sticky top-[72px] z-40 bg-white border-b border-gray-200"
       >
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide py-2">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide py-3">
             {navItems.map(({ to, icon: Icon, label, exact }, index) => (
               <motion.div
                 key={to}
@@ -94,10 +92,10 @@ export default function Layout() {
                   to={to}
                   end={exact}
                   className={({ isActive }) =>
-                    `flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 whitespace-nowrap ${
+                    `relative flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
                       isActive
-                        ? 'bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-md'
-                        : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                        ? 'bg-gray-100 text-gray-900 border border-gray-300'
+                        : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
                     }`
                   }
                 >
@@ -108,13 +106,6 @@ export default function Layout() {
                         strokeWidth={2.5} 
                       />
                       <span>{label}</span>
-                      {isActive && (
-                        <motion.div
-                          layoutId="activeTab"
-                          className="absolute inset-0 bg-gradient-to-r from-primary-600 to-accent-500 rounded-lg -z-10"
-                          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                        />
-                      )}
                     </>
                   )}
                 </NavLink>
@@ -141,7 +132,7 @@ export default function Layout() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Brand */}
             <div className="flex items-center gap-3">
-              <Waves className="h-5 w-5 text-accent-500" />
+              <Waves className="h-5 w-5 text-teal-500" />
               <div>
                 <p className="text-sm font-semibold text-gray-900">
                   Twilio-GHL Manager
@@ -155,20 +146,20 @@ export default function Layout() {
             {/* Status Info */}
             <div className="flex items-center gap-6 text-xs text-gray-500">
               <div className="flex items-center gap-2">
-                <div className="h-2 w-2 bg-success-500 rounded-full animate-pulse" />
+                <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse" />
                 <span>Production</span>
               </div>
               <span>•</span>
               <span>v1.0.0</span>
               <span>•</span>
-              <span className="hidden sm:inline">Clean Light Theme</span>
+              <span className="hidden sm:inline">Modern Design</span>
             </div>
 
             {/* Social/Links (placeholder) */}
             <div className="flex items-center gap-4">
               <motion.a
                 href="#"
-                className="text-gray-500 hover:text-accent-500 transition-colors"
+                className="text-gray-500 hover:text-teal-500 transition-colors"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >

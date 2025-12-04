@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 
 /**
- * DEEP OCEAN THEME - BADGE COMPONENT
- * Status indicators and labels with ocean styling
+ * CLEAN LIGHT THEME - BADGE COMPONENT
+ * Status indicators and labels with light theme styling
  */
 
 export default function Badge({
@@ -19,15 +19,15 @@ export default function Badge({
   
   const baseClasses = 'inline-flex items-center font-medium rounded-md transition-all duration-300';
 
-  // Variant styles
+  // Variant styles - Updated for light theme with better contrast
   const variantClasses = {
-    default: 'bg-white/10 text-white border border-white/20',
-    ocean: 'bg-ocean-500/20 text-ocean-100 border border-ocean-400/30',
-    cyan: 'bg-cyan-500/20 text-cyan-100 border border-cyan-400/30',
-    success: 'bg-success-500/20 text-success-100 border border-success-400/30',
-    warning: 'bg-warning-500/20 text-warning-100 border border-warning-400/30',
-    danger: 'bg-danger-500/20 text-danger-100 border border-danger-400/30',
-    outline: 'bg-transparent text-white border-2 border-white/40',
+    default: 'bg-gray-100 text-gray-700 border border-gray-300',
+    ocean: 'bg-blue-100 text-blue-700 border border-blue-300',
+    cyan: 'bg-cyan-100 text-cyan-700 border border-cyan-300',
+    success: 'bg-green-100 text-green-700 border border-green-300',
+    warning: 'bg-yellow-100 text-yellow-700 border border-yellow-300',
+    danger: 'bg-red-100 text-red-700 border border-red-300',
+    outline: 'bg-transparent text-gray-700 border-2 border-gray-400',
   };
 
   // Size styles

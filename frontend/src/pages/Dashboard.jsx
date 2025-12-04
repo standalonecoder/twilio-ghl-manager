@@ -5,10 +5,6 @@ import { Phone, TrendingUp, AlertCircle, Activity, Users, Sparkles } from 'lucid
 import { StatCard } from '../components/Card';
 import Badge, { StatusBadge } from '../components/Badge';
 
-/**
- * DEEP OCEAN THEMED DASHBOARD
- * Modern glassmorphism design with advanced animations
- */
 export default function Dashboard() {
   const { data: numbersData, isLoading: numbersLoading } = useQuery({
     queryKey: ['numbers'],
@@ -39,7 +35,7 @@ export default function Dashboard() {
       label: 'Total Numbers (DB)',
       value: numbersData?.count || 0,
       icon: Phone,
-      color: 'ocean',
+      color: 'brand',
       trend: 'up',
       trendValue: '+12%'
     },
@@ -47,7 +43,7 @@ export default function Dashboard() {
       label: 'Total Calls',
       value: analyticsData?.stats.totalCalls || 0,
       icon: Activity,
-      color: 'cyan',
+      color: 'brand',
       trend: 'up',
       trendValue: '+8%'
     },
@@ -75,7 +71,6 @@ export default function Dashboard() {
     ? ghlNumbersData 
     : [];
 
-  // Container animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -97,27 +92,26 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen p-6 space-y-8">
-      {/* Hero Header with Gradient */}
+      {/* Hero Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="relative overflow-hidden rounded-2xl p-8 glass-strong"
+        className="relative overflow-hidden rounded-2xl p-8 bg-white border border-gray-200"
       >
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
-            <Sparkles className="h-8 w-8 text-cyan-400" />
-            <h1 className="text-4xl font-bold gradient-text-ocean">
+            <Sparkles className="h-8 w-8 text-accent-500" />
+            <h1 className="text-4xl font-bold gradient-text-primary">
               Dashboard
             </h1>
           </div>
-          <p className="text-lg text-white/70">
+          <p className="text-lg text-gray-600">
             Overview of your Twilio–GHL system performance
           </p>
         </div>
         
-        {/* Animated background decoration */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-cyan-500/20 to-ocean-600/20 rounded-full blur-3xl -z-10" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-accent-500/10 to-primary-600/10 rounded-full blur-3xl -z-10" />
       </motion.div>
 
       {/* Stats Grid */}
@@ -139,15 +133,15 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="ocean-card overflow-hidden"
+        className="modern-card overflow-hidden"
       >
-        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-semibold text-white flex items-center gap-2">
-              <Phone className="h-5 w-5 text-cyan-400" />
+            <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+              <Phone className="h-5 w-5 text-accent-500" />
               Recent Numbers (Database)
             </h3>
-            <p className="text-sm text-white/60 mt-1">
+            <p className="text-sm text-gray-600 mt-1">
               Latest numbers from your Twilio account
             </p>
           </div>
@@ -167,23 +161,23 @@ export default function Dashboard() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05, duration: 0.3 }}
-                  className="flex items-center justify-between py-3 px-4 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 border border-white/5 hover:border-white/15"
+                  className="flex items-center justify-between py-3 px-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all duration-300 border border-gray-200"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-lg bg-ocean-500/20">
-                      <Phone className="h-4 w-4 text-cyan-400" />
+                    <div className="p-2 rounded-lg bg-primary-100">
+                      <Phone className="h-4 w-4 text-accent-500" />
                     </div>
                     <div>
-                      <p className="font-mono font-semibold text-white text-base">
+                      <p className="font-mono font-semibold text-gray-900 text-base">
                         {number.phoneNumber}
                       </p>
-                      <p className="text-sm text-white/60">
+                      <p className="text-sm text-gray-600">
                         {number.friendlyName || 'No name assigned'}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-white/70">
+                    <p className="text-sm text-gray-600">
                       {new Date(number.purchaseDate).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
@@ -196,8 +190,8 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <Phone className="h-12 w-12 text-white/20 mx-auto mb-4" />
-              <p className="text-white/60">No numbers found in database</p>
+              <Phone className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-600">No numbers found in database</p>
             </div>
           )}
         </div>
@@ -208,19 +202,19 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
-        className="ocean-card overflow-hidden"
+        className="modern-card overflow-hidden"
       >
-        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-semibold text-white flex items-center gap-2">
-              <Users className="h-5 w-5 text-cyan-400" />
+            <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+              <Users className="h-5 w-5 text-accent-500" />
               GHL Numbers
             </h3>
-            <p className="text-sm text-white/60 mt-1">
+            <p className="text-sm text-gray-600 mt-1">
               Directly from GHL API – with friendly names & staff assignments
             </p>
           </div>
-          <Badge variant="cyan" dot pulse>
+          <Badge variant="success" dot pulse>
             {ghlNumbers.length} numbers
           </Badge>
         </div>
@@ -238,23 +232,23 @@ export default function Dashboard() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05, duration: 0.3 }}
-                  className="flex items-center justify-between py-3 px-4 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 border border-white/5 hover:border-white/15"
+                  className="flex items-center justify-between py-3 px-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all duration-300 border border-gray-200"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-lg bg-cyan-500/20">
-                      <Phone className="h-4 w-4 text-cyan-400" />
+                    <div className="p-2 rounded-lg bg-accent-100">
+                      <Phone className="h-4 w-4 text-accent-600" />
                     </div>
                     <div>
-                      <p className="font-mono font-semibold text-white text-base">
+                      <p className="font-mono font-semibold text-gray-900 text-base">
                         {num.phoneNumber || num.number || 'Unknown'}
                       </p>
-                      <p className="text-sm text-white/60">
+                      <p className="text-sm text-gray-600">
                         {num.friendlyName || num.name || 'No friendly name'}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Badge variant="ocean" size="sm">
+                    <Badge variant="brand" size="sm">
                       {num.assignedUserName || num.assignedTo || 'Unassigned'}
                     </Badge>
                   </div>
@@ -263,11 +257,11 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <Users className="h-12 w-12 text-white/20 mx-auto mb-4" />
-              <p className="text-white/60">
+              <Users className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-600">
                 No GHL numbers found or API not returning data yet
               </p>
-              <p className="text-sm text-white/40 mt-2">
+              <p className="text-sm text-gray-500 mt-2">
                 Check your GHL integration settings
               </p>
             </div>

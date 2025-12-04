@@ -50,17 +50,17 @@ export default function ActiveNumbers() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-accent-400" />
-        <span className="ml-3 text-white/60">Loading numbers...</span>
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+        <span className="ml-3 text-gray-600">Loading numbers...</span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="modern-card border border-danger-500/30 p-4">
-        <p className="text-danger-400 font-medium">Error loading numbers: {error.message}</p>
-        <p className="text-sm text-white/60 mt-2">Check if backend is running and GHL credentials are configured.</p>
+      <div className="modern-card border border-red-300 p-4">
+        <p className="text-red-600 font-medium">Error loading numbers: {error.message}</p>
+        <p className="text-sm text-gray-600 mt-2">Check if backend is running and GHL credentials are configured.</p>
       </div>
     );
   }
@@ -147,7 +147,7 @@ export default function ActiveNumbers() {
           <button
             onClick={handleBulkRelease}
             disabled={bulkReleaseMutation.isPending}
-            className="flex items-center px-4 py-2 bg-danger-600 text-white rounded-lg text-sm font-semibold hover:bg-danger-700 disabled:opacity-50 transition-colors shadow-md"
+            className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 disabled:opacity-50 transition-colors shadow-md"
           >
             {bulkReleaseMutation.isPending ? (
               <Loader2 className="animate-spin h-4 w-4 mr-2" strokeWidth={2} />
@@ -193,11 +193,11 @@ export default function ActiveNumbers() {
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3">
-          <div className="inline-flex rounded-lg border border-white/10 p-0.5 bg-white/5">
+          <div className="inline-flex rounded-lg border border-gray-200 p-0.5 bg-gray-50">
             <button
               onClick={() => setRoleFilter('all')}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                roleFilter === 'all' ? 'bg-primary-gradient text-white shadow-md' : 'text-white/70 hover:text-white hover:bg-white/10'
+                roleFilter === 'all' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               All
@@ -205,7 +205,7 @@ export default function ActiveNumbers() {
             <button
               onClick={() => setRoleFilter('setters')}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                roleFilter === 'setters' ? 'bg-primary-gradient text-white shadow-md' : 'text-white/70 hover:text-white hover:bg-white/10'
+                roleFilter === 'setters' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               Setters ({setterCount})
@@ -213,7 +213,7 @@ export default function ActiveNumbers() {
             <button
               onClick={() => setRoleFilter('closers')}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                roleFilter === 'closers' ? 'bg-primary-gradient text-white shadow-md' : 'text-white/70 hover:text-white hover:bg-white/10'
+                roleFilter === 'closers' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               Closers ({closerCount})
@@ -221,18 +221,18 @@ export default function ActiveNumbers() {
             <button
               onClick={() => setRoleFilter('states')}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                roleFilter === 'states' ? 'bg-primary-gradient text-white shadow-md' : 'text-white/70 hover:text-white hover:bg-white/10'
+                roleFilter === 'states' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               States ({stateCount})
             </button>
           </div>
 
-          <div className="inline-flex rounded-lg border border-white/10 p-0.5 bg-white/5">
+          <div className="inline-flex rounded-lg border border-gray-200 p-0.5 bg-gray-50">
             <button
               onClick={() => setFilter('all')}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                filter === 'all' ? 'bg-primary-gradient text-white shadow-md' : 'text-white/70 hover:text-white hover:bg-white/10'
+                filter === 'all' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               All Status
@@ -240,7 +240,7 @@ export default function ActiveNumbers() {
             <button
               onClick={() => setFilter('inGHL')}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                filter === 'inGHL' ? 'bg-primary-gradient text-white shadow-md' : 'text-white/70 hover:text-white hover:bg-white/10'
+                filter === 'inGHL' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               In GHL ({summary.inGHL})
@@ -248,7 +248,7 @@ export default function ActiveNumbers() {
             <button
               onClick={() => setFilter('notInGHL')}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                filter === 'notInGHL' ? 'bg-primary-gradient text-white shadow-md' : 'text-white/70 hover:text-white hover:bg-white/10'
+                filter === 'notInGHL' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               Not in GHL ({summary.notInGHL})
@@ -256,7 +256,7 @@ export default function ActiveNumbers() {
             <button
               onClick={() => setFilter('unassigned')}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                filter === 'unassigned' ? 'bg-primary-gradient text-white shadow-md' : 'text-white/70 hover:text-white hover:bg-white/10'
+                filter === 'unassigned' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               Unassigned ({unassignedCount})
@@ -268,11 +268,11 @@ export default function ActiveNumbers() {
       {/* Numbers List */}
       {filteredNumbers.length === 0 ? (
         <div className="modern-card p-12 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-full mb-4">
-            <Phone className="h-8 w-8 text-white/40" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+            <Phone className="h-8 w-8 text-gray-400" />
           </div>
-          <p className="text-sm font-medium text-white mb-1">No numbers found</p>
-          <p className="text-xs text-white/60">
+          <p className="text-sm font-medium text-gray-900 mb-1">No numbers found</p>
+          <p className="text-xs text-gray-500">
             {searchQuery 
               ? `No results for "${searchQuery}"`
               : 'Try adjusting your filters'
@@ -285,7 +285,7 @@ export default function ActiveNumbers() {
                 setFilter('all');
                 setRoleFilter('all');
               }}
-              className="mt-4 text-xs text-accent-400 hover:text-accent-300 font-medium transition-colors"
+              className="mt-4 text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors"
             >
               Clear all filters
             </button>
@@ -294,35 +294,35 @@ export default function ActiveNumbers() {
       ) : (
         <div className="modern-card overflow-hidden">
           {/* Header */}
-          <div className="bg-white/5 px-4 py-3 border-b border-white/10">
+          <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
             <div className="flex items-center">
               <input
                 type="checkbox"
                 checked={selectedNumbers.size === filteredNumbers.length && filteredNumbers.length > 0}
                 onChange={toggleAll}
-                className="h-4 w-4 text-accent-500 bg-white/10 rounded border-white/20 focus:ring-2 focus:ring-accent-500 focus:ring-offset-0 transition-colors"
+                className="h-4 w-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 transition-colors"
               />
-              <span className="ml-3 text-xs font-semibold text-white/80">
+              <span className="ml-3 text-xs font-semibold text-gray-700">
                 {selectedNumbers.size > 0 ? `${selectedNumbers.size} selected` : `${filteredNumbers.length} numbers`}
               </span>
             </div>
           </div>
 
           {/* List */}
-          <div className="divide-y divide-white/10">
+          <div className="divide-y divide-gray-100">
             {filteredNumbers.map((number) => {
               const role = getNumberRole(number.phoneNumber);
               const roleBadges = {
-                setter: <span className="text-xs px-2 py-0.5 bg-primary-500/20 text-primary-300 rounded-full font-medium">510</span>,
-                closer: <span className="text-xs px-2 py-0.5 bg-primary-500/20 text-primary-300 rounded-full font-medium">650</span>,
-                state: <span className="text-xs px-2 py-0.5 bg-white/10 text-white/70 rounded-full font-medium">State</span>
+                setter: <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium">510</span>,
+                closer: <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium">650</span>,
+                state: <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full font-medium">State</span>
               };
 
               return (
                 <div
                   key={number.sid}
-                  className={`flex items-center justify-between px-4 py-3 hover:bg-white/5 transition-colors ${
-                    selectedNumbers.has(number.phoneNumber) ? 'bg-primary-500/10' : ''
+                  className={`flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors ${
+                    selectedNumbers.has(number.phoneNumber) ? 'bg-blue-50' : ''
                   }`}
                 >
                   <div className="flex items-center space-x-3 flex-1 min-w-0">
@@ -330,35 +330,35 @@ export default function ActiveNumbers() {
                       type="checkbox"
                       checked={selectedNumbers.has(number.phoneNumber)}
                       onChange={() => toggleNumber(number.phoneNumber)}
-                      className="h-4 w-4 text-accent-500 bg-white/10 rounded border-white/20 focus:ring-2 focus:ring-accent-500 focus:ring-offset-0 transition-colors"
+                      className="h-4 w-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 transition-colors"
                     />
                     
-                    <Phone className="h-4 w-4 text-white/40 flex-shrink-0" strokeWidth={2} />
+                    <Phone className="h-4 w-4 text-gray-400 flex-shrink-0" strokeWidth={2} />
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-mono text-sm font-semibold text-white">
+                        <p className="font-mono text-sm font-semibold text-gray-900">
                           {number.phoneNumber}
                         </p>
                         {roleBadges[role]}
                         {number.inGHL ? (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-500/20 text-success-400">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
                             <CheckCircle2 className="h-3 w-3 mr-1" strokeWidth={2} />
                             GHL
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-white/10 text-white/60">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
                             <XCircle className="h-3 w-3 mr-1" strokeWidth={2} />
                             Not Synced
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-white/60 mt-0.5 truncate">
+                      <p className="text-xs text-gray-500 mt-0.5 truncate">
                         {number.inGHL && number.ghlData?.friendlyName 
                           ? number.ghlData.friendlyName
                           : number.friendlyName || 'No name'}
                         {number.inGHL && number.ghlData?.linkedUser && (
-                          <span className="ml-2 text-accent-400">• Assigned</span>
+                          <span className="ml-2 text-blue-600">• Assigned</span>
                         )}
                       </p>
                     </div>
@@ -371,7 +371,7 @@ export default function ActiveNumbers() {
                       }
                     }}
                     disabled={deleteMutation.isPending}
-                    className="text-danger-400 hover:text-danger-300 flex items-center disabled:opacity-50 transition-colors px-3 py-1.5 rounded-md hover:bg-danger-500/10 text-xs font-medium flex-shrink-0"
+                    className="text-red-600 hover:text-red-700 flex items-center disabled:opacity-50 transition-colors px-3 py-1.5 rounded-md hover:bg-red-50 text-xs font-medium flex-shrink-0"
                   >
                     {deleteMutation.isPending ? (
                       <Loader2 className="animate-spin h-3.5 w-3.5 mr-1" strokeWidth={2} />
@@ -388,7 +388,7 @@ export default function ActiveNumbers() {
       )}
 
       {/* Footer */}
-      <div className="text-xs text-white/60 text-center">
+      <div className="text-xs text-gray-500 text-center">
         Showing {filteredNumbers.length} of {summary.total} numbers
         {selectedNumbers.size > 0 && ` • ${selectedNumbers.size} selected`}
       </div>

@@ -2,8 +2,8 @@ import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
 
 /**
- * DEEP OCEAN THEME - CARD COMPONENTS
- * Professional glassmorphism cards with advanced animations
+ * LIGHT THEME - CARD COMPONENTS
+ * Clean cards with proper text contrast
  */
 
 /**
@@ -22,11 +22,11 @@ export const Card = forwardRef(({
   const baseClasses = 'rounded-xl transition-all duration-400 ease-smooth';
   
   const variantClasses = {
-    default: 'ocean-card',
+    default: 'modern-card',
     glass: 'glass p-6',
     'glass-strong': 'glass-strong p-6',
     'glass-dark': 'glass-dark p-6',
-    solid: 'bg-white/10 border border-white/15 p-6',
+    solid: 'bg-white border border-gray-200 p-6',
   };
 
   const hoverClasses = hover 
@@ -105,7 +105,7 @@ Card.displayName = 'Card';
  */
 export function CardHeader({ children, className = '' }) {
   return (
-    <div className={`px-6 py-4 border-b border-white/10 ${className}`}>
+    <div className={`px-6 py-4 border-b border-gray-200 ${className}`}>
       {children}
     </div>
   );
@@ -127,7 +127,7 @@ export function CardContent({ children, className = '' }) {
  */
 export function CardFooter({ children, className = '' }) {
   return (
-    <div className={`px-6 py-4 border-t border-white/10 ${className}`}>
+    <div className={`px-6 py-4 border-t border-gray-200 ${className}`}>
       {children}
     </div>
   );
@@ -140,7 +140,7 @@ export function CardTitle({ children, className = '', gradient = false }) {
   return (
     <h3 className={`
       text-lg font-semibold
-      ${gradient ? 'gradient-text-ocean' : 'text-white'}
+      ${gradient ? 'gradient-text-primary' : 'text-gray-900'}
       ${className}
     `}>
       {children}
@@ -153,14 +153,14 @@ export function CardTitle({ children, className = '', gradient = false }) {
  */
 export function CardDescription({ children, className = '' }) {
   return (
-    <p className={`text-sm text-white/60 mt-1 ${className}`}>
+    <p className={`text-sm text-gray-600 mt-1 ${className}`}>
       {children}
     </p>
   );
 }
 
 /**
- * Stat Card - Ocean themed with animated counters
+ * Stat Card - Light theme with readable text
  */
 export function StatCard({ 
   label, 
@@ -168,20 +168,65 @@ export function StatCard({
   icon: Icon, 
   trend, 
   trendValue, 
-  color = 'ocean',
+  color = 'brand',
   animate = true 
 }) {
   const colorClasses = {
-    ocean: 'bg-gradient-to-br from-ocean-600 to-ocean-500',
-    cyan: 'bg-gradient-to-br from-cyan-600 to-cyan-500',
-    success: 'bg-gradient-to-br from-success-600 to-success-500',
-    warning: 'bg-gradient-to-br from-warning-600 to-warning-500',
-    danger: 'bg-gradient-to-br from-danger-600 to-danger-500',
+    brand: {
+      bg: 'bg-blue-50',
+      border: 'border-blue-200',
+      label: 'text-blue-600',
+      value: 'text-blue-900',
+      iconBg: 'bg-blue-100',
+      icon: 'text-blue-600'
+    },
+    ocean: {
+      bg: 'bg-blue-50',
+      border: 'border-blue-200',
+      label: 'text-blue-600',
+      value: 'text-blue-900',
+      iconBg: 'bg-blue-100',
+      icon: 'text-blue-600'
+    },
+    cyan: {
+      bg: 'bg-cyan-50',
+      border: 'border-cyan-200',
+      label: 'text-cyan-600',
+      value: 'text-cyan-900',
+      iconBg: 'bg-cyan-100',
+      icon: 'text-cyan-600'
+    },
+    success: {
+      bg: 'bg-green-50',
+      border: 'border-green-200',
+      label: 'text-green-600',
+      value: 'text-green-900',
+      iconBg: 'bg-green-100',
+      icon: 'text-green-600'
+    },
+    warning: {
+      bg: 'bg-yellow-50',
+      border: 'border-yellow-200',
+      label: 'text-yellow-600',
+      value: 'text-yellow-900',
+      iconBg: 'bg-yellow-100',
+      icon: 'text-yellow-600'
+    },
+    danger: {
+      bg: 'bg-red-50',
+      border: 'border-red-200',
+      label: 'text-red-600',
+      value: 'text-red-900',
+      iconBg: 'bg-red-100',
+      icon: 'text-red-600'
+    },
   };
 
+  const colors = colorClasses[color] || colorClasses.brand;
+
   const trendColors = {
-    up: 'text-success-400',
-    down: 'text-danger-400',
+    up: 'text-green-600',
+    down: 'text-red-600',
   };
 
   const CardWrapper = animate ? motion.div : 'div';
@@ -193,13 +238,13 @@ export function StatCard({
   } : {};
 
   return (
-    <CardWrapper className="ocean-card p-6" {...cardProps}>
+    <CardWrapper className={`${colors.bg} border ${colors.border} rounded-xl p-6 shadow-sm`} {...cardProps}>
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-xs font-medium text-white/60 uppercase tracking-wider mb-2">
+          <p className={`text-xs font-medium ${colors.label} uppercase tracking-wider mb-2`}>
             {label}
           </p>
-          <p className="text-3xl font-bold text-white">
+          <p className={`text-3xl font-bold ${colors.value}`}>
             {value}
           </p>
           
@@ -212,8 +257,8 @@ export function StatCard({
         </div>
         
         {Icon && (
-          <div className={`${colorClasses[color]} p-3 rounded-xl shadow-lg`}>
-            <Icon className="h-6 w-6 text-white" strokeWidth={2.5} />
+          <div className={`${colors.iconBg} p-3 rounded-xl`}>
+            <Icon className={`h-6 w-6 ${colors.icon}`} strokeWidth={2.5} />
           </div>
         )}
       </div>
@@ -222,7 +267,7 @@ export function StatCard({
 }
 
 /**
- * Alert Card - Ocean themed notifications
+ * Alert Card - Light theme notifications
  */
 export function AlertCard({ 
   type = 'info', 
@@ -233,28 +278,28 @@ export function AlertCard({
 }) {
   const typeStyles = {
     info: {
-      bg: 'bg-ocean-500/10',
-      border: 'border-ocean-400/30',
-      text: 'text-ocean-100',
-      icon: 'text-ocean-400',
+      bg: 'bg-blue-50',
+      border: 'border-blue-200',
+      text: 'text-blue-900',
+      icon: 'text-blue-600',
     },
     success: {
-      bg: 'bg-success-500/10',
-      border: 'border-success-400/30',
-      text: 'text-success-100',
-      icon: 'text-success-400',
+      bg: 'bg-green-50',
+      border: 'border-green-200',
+      text: 'text-green-900',
+      icon: 'text-green-600',
     },
     warning: {
-      bg: 'bg-warning-500/10',
-      border: 'border-warning-400/30',
-      text: 'text-warning-100',
-      icon: 'text-warning-400',
+      bg: 'bg-yellow-50',
+      border: 'border-yellow-200',
+      text: 'text-yellow-900',
+      icon: 'text-yellow-600',
     },
     danger: {
-      bg: 'bg-danger-500/10',
-      border: 'border-danger-400/30',
-      text: 'text-danger-100',
-      icon: 'text-danger-400',
+      bg: 'bg-red-50',
+      border: 'border-red-200',
+      text: 'text-red-900',
+      icon: 'text-red-600',
     },
   };
 
@@ -265,7 +310,7 @@ export function AlertCard({
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
-      className={`${styles.bg} ${styles.border} border backdrop-blur-md rounded-xl p-4`}
+      className={`${styles.bg} ${styles.border} border rounded-xl p-4`}
     >
       <div className="flex items-start">
         {Icon && (
@@ -279,7 +324,7 @@ export function AlertCard({
               {title}
             </h3>
           )}
-          <div className={`text-sm ${styles.text} ${title ? 'mt-1' : ''} opacity-90`}>
+          <div className={`text-sm ${styles.text} ${title ? 'mt-1' : ''}`}>
             {children}
           </div>
         </div>
@@ -315,31 +360,31 @@ export function MetricCard({
   } : {};
 
   return (
-    <CardWrapper className="ocean-card p-8" {...cardProps}>
+    <CardWrapper className="modern-card p-8" {...cardProps}>
       <div className="flex items-start justify-between mb-4">
         <div>
-          <p className="text-sm font-medium text-white/60 mb-2">{title}</p>
-          <h2 className="text-4xl font-bold gradient-text-ocean">
+          <p className="text-sm font-medium text-gray-600 mb-2">{title}</p>
+          <h2 className="text-4xl font-bold gradient-text-primary">
             {value}
           </h2>
         </div>
         {Icon && (
-          <div className="bg-cyan-500/20 p-3 rounded-xl">
-            <Icon className="h-8 w-8 text-cyan-400" strokeWidth={2} />
+          <div className="bg-blue-100 p-3 rounded-xl">
+            <Icon className="h-8 w-8 text-blue-600" strokeWidth={2} />
           </div>
         )}
       </div>
       {subtitle && (
-        <p className="text-sm text-white/50">{subtitle}</p>
+        <p className="text-sm text-gray-500">{subtitle}</p>
       )}
       {trend && (
         <div className="mt-4 flex items-center">
           <span className={`text-sm font-medium ${
-            trend > 0 ? 'text-success-400' : 'text-danger-400'
+            trend > 0 ? 'text-green-600' : 'text-red-600'
           }`}>
             {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}%
           </span>
-          <span className="text-sm text-white/40 ml-2">vs last period</span>
+          <span className="text-sm text-gray-500 ml-2">vs last period</span>
         </div>
       )}
     </CardWrapper>
