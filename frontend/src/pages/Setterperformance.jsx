@@ -78,8 +78,9 @@ export default function SetterPerformance() {
 
   if (error && !data) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-        <p className="text-red-800">Error loading setter performance: {error.message}</p>
+      <div className="modern-card border border-red-300 p-4">
+        <p className="text-red-600 font-medium">Error loading setter performance: {error.message}</p>
+        <p className="text-sm text-gray-600 mt-2">Check if backend is running and GHL credentials are configured.</p>
       </div>
     );
   }
@@ -104,7 +105,7 @@ export default function SetterPerformance() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">Setter Performance</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Setter Performance</h2>
           <p className="mt-1 text-sm text-gray-600">Track individual setter dial activity and performance</p>
         </div>
         
@@ -121,7 +122,7 @@ export default function SetterPerformance() {
                 setSelectedDays(parseInt(value));
               }
             }}
-            className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
           >
             <option value={1}>Today</option>
             <option value={2}>Yesterday</option>
@@ -137,14 +138,14 @@ export default function SetterPerformance() {
                 type="date"
                 value={customStartDate}
                 onChange={(e) => setCustomStartDate(e.target.value)}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors"
               />
               <span className="text-xs text-gray-500">to</span>
               <input
                 type="date"
                 value={customEndDate}
                 onChange={(e) => setCustomEndDate(e.target.value)}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors"
               />
             </div>
           )}
@@ -152,7 +153,7 @@ export default function SetterPerformance() {
           <button
             onClick={() => refetch()}
             disabled={isFetching}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm"
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${isFetching ? 'animate-spin' : ''}`} strokeWidth={2} />
             Refresh
@@ -169,7 +170,7 @@ export default function SetterPerformance() {
 
       {/* Top Performer Highlight */}
       {topPerformer && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="modern-card border border-blue-300 p-4">
           <div className="flex items-start">
             <Trophy className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" strokeWidth={2} />
             <div className="ml-3">
@@ -186,7 +187,7 @@ export default function SetterPerformance() {
 
       {/* Top Closer Highlight */}
       {topCloser && topCloser.bookings > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="modern-card border border-blue-300 p-4">
           <div className="flex items-start">
             <Target className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" strokeWidth={2} />
             <div className="ml-3">
@@ -202,7 +203,7 @@ export default function SetterPerformance() {
       )}
 
       {/* Setter Performance Table */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <div className="modern-card overflow-hidden">
         <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
           <h3 className="text-sm font-semibold text-gray-900">Setter Leaderboard</h3>
           <p className="text-xs text-gray-600 mt-0.5">Ranked by total dial count</p>
@@ -225,14 +226,14 @@ export default function SetterPerformance() {
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-gray-100">
               {setters.map((setter, index) => {
                 const rank = index + 1;
                 const medalEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
                 const todaysCalls = setter.callsByDay?.[today] || 0;
 
                 return (
-                  <tr key={setter.userId} className="hover:bg-gray-50">
+                  <tr key={setter.userId} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3 whitespace-nowrap">
                       <span className="text-lg">{medalEmoji || `#${rank}`}</span>
                     </td>
@@ -315,7 +316,7 @@ export default function SetterPerformance() {
                           setSelectedSetter(setter);
                           setShowCallsModal(true);
                         }}
-                        className="text-blue-600 hover:text-blue-800 transition-colors"
+                        className="text-blue-600 hover:text-blue-700 transition-colors p-1 rounded hover:bg-blue-50"
                         title="View call details"
                       >
                         <Eye className="h-4 w-4" strokeWidth={2} />
@@ -341,7 +342,7 @@ export default function SetterPerformance() {
 
       {/* Daily Breakdown */}
       {setters.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg p-5">
+        <div className="modern-card p-5">
           <h3 className="text-sm font-semibold text-gray-900 mb-4">Daily Dial Activity</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {setters.slice(0, 6).map((setter) => {
@@ -396,6 +397,7 @@ export default function SetterPerformance() {
               {callsLoading ? (
                 <div className="flex items-center justify-center py-12">
                   <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                  <span className="ml-3 text-gray-600">Loading call details...</span>
                 </div>
               ) : (
                 <div className="space-y-4">

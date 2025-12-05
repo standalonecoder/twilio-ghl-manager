@@ -48,14 +48,15 @@ export default function Layout() {
                   <Phone className="h-6 w-6 text-white" strokeWidth={2.5} />
                 </div>
               </motion.div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">
-                  Twilio-GHL Manager
-                </h1>
-                <p className="text-xs text-gray-600 font-medium">
-                  Enterprise Phone Management System
-                </p>
-              </div>
+  
+  <div>
+  <h1 className="text-xl font-display font-bold gradient-text-primary">
+    Twilio-GHL Manager
+  </h1>
+  <p className="text-xs font-body text-gray-600 font-medium">
+    Enterprise Phone Management System
+  </p>
+</div>
             </div>
             
             {/* Status Badge */}

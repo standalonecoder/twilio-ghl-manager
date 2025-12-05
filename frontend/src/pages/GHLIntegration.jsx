@@ -8,7 +8,8 @@ import {
   AlertCircle, 
   ExternalLink,
   Copy,
-  Phone
+  Phone,
+  Loader2
 } from 'lucide-react';
 import { StatCard } from '../components/Card';
 
@@ -38,7 +39,7 @@ export default function GHLIntegration() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
         <span className="ml-3 text-gray-600">Loading sync status...</span>
       </div>
     );
@@ -46,8 +47,9 @@ export default function GHLIntegration() {
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-        <p className="text-red-800">Error loading sync status: {error.message}</p>
+      <div className="modern-card border border-red-300 p-4">
+        <p className="text-red-600 font-medium">Error loading sync status: {error.message}</p>
+        <p className="text-sm text-gray-600 mt-2">Check if backend is running and GHL credentials are configured.</p>
       </div>
     );
   }
@@ -57,13 +59,13 @@ export default function GHLIntegration() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">GHL Integration</h2>
+          <h2 className="text-2xl font-bold text-gray-900">GHL Integration</h2>
           <p className="mt-1 text-sm text-gray-600">Sync status and manual sync workflow</p>
         </div>
         <button
           onClick={() => refetch()}
           disabled={isFetching}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm"
+          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md"
         >
           <RefreshCw className={`h-4 w-4 mr-2 ${isFetching ? 'animate-spin' : ''}`} strokeWidth={2} />
           {isFetching ? 'Refreshing...' : 'Refresh Status'}
@@ -89,7 +91,7 @@ export default function GHLIntegration() {
 
       {/* Alert Box if numbers need syncing */}
       {summary.notInGHL > 0 && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div className="modern-card border border-yellow-300 p-4">
           <div className="flex items-start">
             <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" strokeWidth={2} />
             <div className="ml-3 flex-1">
@@ -106,7 +108,7 @@ export default function GHLIntegration() {
 
       {/* Success message if all synced */}
       {summary.notInGHL === 0 && summary.total > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="modern-card border border-blue-300 p-4">
           <div className="flex items-start">
             <CheckCircle2 className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" strokeWidth={2} />
             <div className="ml-3">
@@ -123,7 +125,7 @@ export default function GHLIntegration() {
 
       {/* Manual Sync Instructions */}
       {summary.notInGHL > 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="modern-card overflow-hidden">
           <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
             <h3 className="text-sm font-semibold text-gray-900 flex items-center">
               <AlertCircle className="h-4 w-4 text-blue-600 mr-2" strokeWidth={2} />
@@ -174,7 +176,7 @@ export default function GHLIntegration() {
 
       {/* Numbers NOT in GHL */}
       {numbersNotInGHL.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="modern-card overflow-hidden">
           <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-gray-900 flex items-center">
@@ -189,23 +191,23 @@ export default function GHLIntegration() {
               These numbers need to be manually added to GoHighLevel
             </p>
           </div>
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-100">
             {numbersNotInGHL.map((number) => (
-              <div key={number.sid} className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors">
+              <div key={number.sid} className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center space-x-3 flex-1 min-w-0">
                   <Phone className="h-4 w-4 text-gray-400 flex-shrink-0" strokeWidth={2} />
                   <div className="min-w-0 flex-1">
                     <p className="font-mono text-sm font-semibold text-gray-900">
                       {number.phoneNumber}
                     </p>
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-xs text-gray-500 truncate mt-0.5">
                       {number.friendlyName || 'No name'}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => copyToClipboard(number.phoneNumber)}
-                  className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors flex-shrink-0"
+                  className="text-blue-600 hover:text-blue-700 flex items-center transition-colors px-3 py-1.5 rounded-md hover:bg-blue-50 text-xs font-medium flex-shrink-0"
                 >
                   {copiedNumber === number.phoneNumber ? (
                     <>
@@ -227,7 +229,7 @@ export default function GHLIntegration() {
 
       {/* Numbers IN GHL (Success List) */}
       {numbersInGHL.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="modern-card overflow-hidden">
           <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-gray-900 flex items-center">

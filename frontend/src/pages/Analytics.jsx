@@ -73,9 +73,9 @@ export default function CallAnalytics() {
 
   if (error && !data) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-        <p className="text-red-800">Error loading analytics: {error.message}</p>
-        <p className="text-sm text-red-600 mt-2">Make sure your Twilio account has call logs.</p>
+      <div className="modern-card border border-red-300 p-4">
+        <p className="text-red-600 font-medium">Error loading analytics: {error.message}</p>
+        <p className="text-sm text-gray-600 mt-2">Make sure your Twilio account has call logs.</p>
       </div>
     );
   }
@@ -106,7 +106,7 @@ export default function CallAnalytics() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">Call Performance Analytics</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Call Performance Analytics</h2>
           <p className="mt-1 text-sm text-gray-600">Track call success rates and identify spam-flagged numbers</p>
         </div>
         
@@ -123,7 +123,7 @@ export default function CallAnalytics() {
                 setSelectedDays(parseInt(value));
               }
             }}
-            className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
           >
             <option value={1}>Today</option>
             <option value={2}>Yesterday</option>
@@ -139,14 +139,14 @@ export default function CallAnalytics() {
                 type="date"
                 value={customStartDate}
                 onChange={(e) => setCustomStartDate(e.target.value)}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors"
               />
               <span className="text-xs text-gray-500">to</span>
               <input
                 type="date"
                 value={customEndDate}
                 onChange={(e) => setCustomEndDate(e.target.value)}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors"
               />
             </div>
           )}
@@ -154,7 +154,7 @@ export default function CallAnalytics() {
           <button
             onClick={() => refetch()}
             disabled={isFetching}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm"
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${isFetching ? 'animate-spin' : ''}`} strokeWidth={2} />
             Refresh
@@ -163,7 +163,7 @@ export default function CallAnalytics() {
       </div>
 
       {/* Spam Detection Explanation */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="modern-card border border-blue-300 p-4">
         <div className="flex items-start">
           <Activity className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" strokeWidth={2} />
           <div className="ml-3">
@@ -191,7 +191,7 @@ export default function CallAnalytics() {
 
       {/* High Risk Alert */}
       {highRiskNumbers.length > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="modern-card border border-red-300 p-4">
           <div className="flex items-start">
             <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" strokeWidth={2} />
             <div className="ml-3">
@@ -226,7 +226,7 @@ export default function CallAnalytics() {
 
       {/* Performance by Role */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="modern-card p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-gray-900">Setters (510)</h3>
             <span className="text-xl font-bold text-blue-600">{setters.length}</span>
@@ -247,7 +247,7 @@ export default function CallAnalytics() {
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="modern-card p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-gray-900">Closers (650)</h3>
             <span className="text-xl font-bold text-blue-600">{closers.length}</span>
@@ -268,7 +268,7 @@ export default function CallAnalytics() {
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="modern-card p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-gray-900">State Numbers</h3>
             <span className="text-xl font-bold text-blue-600">{states.length}</span>
@@ -291,7 +291,7 @@ export default function CallAnalytics() {
       </div>
 
       {/* Number Performance Table */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <div className="modern-card overflow-hidden">
         <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
           <h3 className="text-sm font-semibold text-gray-900">Number Performance Details</h3>
           <p className="text-xs text-gray-600 mt-0.5">Sorted by spam risk (high risk first)</p>
@@ -313,13 +313,13 @@ export default function CallAnalytics() {
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-gray-100">
               {numbers.map((number) => {
                 const role = getNumberRole(number.phoneNumber);
                 const roleLabels = { setter: 'Setter', closer: 'Closer', state: 'State' };
 
                 return (
-                  <tr key={number.phoneNumber} className="hover:bg-gray-50">
+                  <tr key={number.phoneNumber} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3 whitespace-nowrap">
                       <p className="font-mono text-xs font-semibold text-gray-900">{number.phoneNumber}</p>
                       <p className="text-xs text-gray-500 truncate">{number.friendlyName || 'No name'}</p>
@@ -384,7 +384,7 @@ export default function CallAnalytics() {
                             setSelectedNumber(number);
                             setShowDetailsModal(true);
                           }}
-                          className="text-blue-600 hover:text-blue-800"
+                          className="text-blue-600 hover:text-blue-700 transition-colors p-1 rounded hover:bg-blue-50"
                           title="View Details"
                         >
                           <Eye className="h-4 w-4" strokeWidth={2} />
@@ -392,11 +392,11 @@ export default function CallAnalytics() {
                         {number.spamRisk === 'high' && (
                           <button
                             onClick={() => {
-                              if (window.confirm(`Replace ${number.phoneNumber}?\\n\\nThis number has low answer rate (${number.answerRate}%) and may be spam-flagged.`)) {
+                              if (window.confirm(`Replace ${number.phoneNumber}?\n\nThis number has low answer rate (${number.answerRate}%) and may be spam-flagged.`)) {
                                 alert('Release functionality coming soon!');
                               }
                             }}
-                            className="text-red-600 hover:text-red-800"
+                            className="text-red-600 hover:text-red-700 transition-colors p-1 rounded hover:bg-red-50"
                             title="Replace Number"
                           >
                             <Trash2 className="h-4 w-4" strokeWidth={2} />
@@ -424,7 +424,7 @@ export default function CallAnalytics() {
 
       {/* Insights */}
       {numbers.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="modern-card border border-blue-300 p-4">
           <h3 className="text-sm font-semibold text-gray-900 mb-3">Insights & Recommendations</h3>
           <div className="space-y-2 text-xs text-gray-700">
             {highRiskNumbers.length > 0 && (
@@ -452,7 +452,7 @@ export default function CallAnalytics() {
                 </div>
                 <button
                   onClick={() => setShowDetailsModal(false)}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                  className="text-gray-400 hover:text-gray-600 text-2xl transition-colors"
                 >
                   ×
                 </button>
@@ -461,6 +461,7 @@ export default function CallAnalytics() {
               {detailsLoading ? (
                 <div className="flex items-center justify-center py-12">
                   <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                  <span className="ml-3 text-gray-600">Loading details...</span>
                 </div>
               ) : (
                 <div className="space-y-4">

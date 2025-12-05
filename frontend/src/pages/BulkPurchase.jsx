@@ -232,7 +232,8 @@ export default function BulkPurchase() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="animate-spin h-8 w-8 text-accent-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+        <span className="ml-3 text-gray-600">Loading...</span>
       </div>
     );
   }
@@ -240,12 +241,15 @@ export default function BulkPurchase() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900">Bulk Purchase</h2>
-        <p className="mt-1 text-sm text-gray-600">
-          Purchase phone numbers for states, setters, or closers
-        </p>
-      </div>
+   {/* Header */}
+<div>
+  <h2 className="text-3xl font-display font-bold text-gray-900 tracking-tight">
+    Bulk Purchase
+  </h2>
+  <p className="mt-1 text-base font-body text-gray-600">
+    Purchase phone numbers for states, setters, or closers
+  </p>
+</div>
 
       {/* Purchase Mode Selector */}
       <div className="modern-card p-4">
@@ -259,9 +263,9 @@ export default function BulkPurchase() {
         <div className="inline-flex rounded-lg border border-gray-200 p-0.5 bg-gray-50">
           <button
             onClick={() => setPurchaseMode('states')}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
               purchaseMode === 'states'
-                ? 'bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-md'
+                ? 'bg-blue-600 text-white shadow-md'
                 : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
@@ -270,9 +274,9 @@ export default function BulkPurchase() {
           
           <button
             onClick={() => setPurchaseMode('setter')}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
               purchaseMode === 'setter'
-                ? 'bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-md'
+                ? 'bg-blue-600 text-white shadow-md'
                 : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
@@ -281,9 +285,9 @@ export default function BulkPurchase() {
           
           <button
             onClick={() => setPurchaseMode('closer')}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
               purchaseMode === 'closer'
-                ? 'bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-md'
+                ? 'bg-blue-600 text-white shadow-md'
                 : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
@@ -294,7 +298,7 @@ export default function BulkPurchase() {
 
       {/* Quick Purchase for Setters/Closers */}
       {purchaseMode !== 'states' && (
-        <div className="bg-white border border-gray-200 rounded-lg p-5">
+        <div className="modern-card p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-sm font-semibold text-gray-900">
@@ -308,7 +312,7 @@ export default function BulkPurchase() {
             <button
               onClick={handleQuickPurchase}
               disabled={quickPurchaseMutation.isPending}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center shadow-sm"
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md"
             >
               {quickPurchaseMutation.isPending ? (
                 <>
@@ -336,7 +340,7 @@ export default function BulkPurchase() {
       {purchaseMode === 'setter' && (
         <>
           {/* Purchase Summary for Setters */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="modern-card p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-900 font-semibold">
@@ -349,7 +353,7 @@ export default function BulkPurchase() {
               <button
                 onClick={handleBulkSetterPurchase}
                 disabled={selectedSetters.length === 0 || bulkSetterPurchaseMutation.isPending}
-                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center text-sm font-semibold transition-colors shadow-sm"
+                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-md"
               >
                 {bulkSetterPurchaseMutation.isPending ? (
                   <>
@@ -367,100 +371,104 @@ export default function BulkPurchase() {
           </div>
 
           {/* Search & Select All for Setters */}
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search setters by name or email..."
-                  value={setterSearchTerm}
-                  onChange={(e) => setSetterSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              <button
-                onClick={handleSelectAllSetters}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-              >
-                {selectedSetters.length === (usersData?.users || []).length ? 'Deselect All' : 'Select All'}
-              </button>
+          <div className="modern-card p-4 space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search setters by name or email..."
+                value={setterSearchTerm}
+                onChange={(e) => setSetterSearchTerm(e.target.value)}
+                className="modern-input w-full pl-10 pr-10 py-2.5 text-sm"
+              />
+              {setterSearchTerm && (
+                <button
+                  onClick={() => setSetterSearchTerm('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-900 text-sm transition-colors"
+                >
+                  ✕
+                </button>
+              )}
             </div>
+            <button
+              onClick={handleSelectAllSetters}
+              className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            >
+              {selectedSetters.length === (usersData?.users || []).length ? 'Deselect All' : 'Select All'}
+            </button>
           </div>
 
           {/* Setters Grid */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
+          <div className="modern-card overflow-hidden">
             {usersLoading ? (
-              <div className="flex items-center justify-center py-8">
+              <div className="flex items-center justify-center py-12 px-6">
                 <Loader2 className="animate-spin h-8 w-8 text-blue-600" />
                 <span className="ml-3 text-gray-600">Loading GHL users...</span>
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
-                  {filteredSetters.map((user) => {
-                    const userId = user.id || user.userId || user.ghlUserId;
-                    const userName = user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim();
-                    const userEmail = user.email || '';
-                    const isSelected = selectedSetters.includes(userId);
-                    
-                    return (
-                      <label
-                        key={userId}
-                        className={`group relative flex items-center px-3.5 py-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                          isSelected
-                            ? 'bg-gradient-to-br from-blue-50 to-blue-100/50 border-l-4 border-blue-500 shadow-sm'
-                            : 'bg-white border border-gray-200 hover:border-blue-400 hover:shadow-md hover:-translate-y-0.5'
-                        }`}
-                      >
-                        <div className={`flex-shrink-0 mr-3 p-1.5 rounded-md transition-colors ${
-                          isSelected ? 'bg-blue-500' : 'bg-gray-100 group-hover:bg-blue-100'
-                        }`}>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
+                    {filteredSetters.map((user) => {
+                      const userId = user.id || user.userId || user.ghlUserId;
+                      const userName = user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim();
+                      const userEmail = user.email || '';
+                      const isSelected = selectedSetters.includes(userId);
+                      
+                      return (
+                        <label
+                          key={userId}
+                          className={`group relative flex items-center px-3.5 py-3 rounded-lg cursor-pointer transition-all ${
+                            isSelected
+                              ? 'bg-blue-50'
+                              : 'bg-white border border-gray-200 hover:bg-gray-50'
+                          }`}
+                        >
                           <input
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => handleSetterToggle(userId)}
-                            className="h-3.5 w-3.5 text-blue-600 border-0 rounded focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
+                            className="h-4 w-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 transition-colors"
                           />
-                        </div>
-                        
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-sm font-semibold truncate transition-colors ${
-                            isSelected ? 'text-blue-900' : 'text-gray-900 group-hover:text-blue-700'
-                          }`}>
-                            {userName}
-                          </p>
-                          <p className="text-xs text-gray-500 truncate mt-0.5">
-                            {userEmail}
-                          </p>
-                        </div>
-                        
-                        {isSelected && (
-                          <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0 ml-2" strokeWidth={2.5} />
-                        )}
-                      </label>
-                    );
-                  })}
-                </div>
-
-                {filteredSetters.length === 0 && (
-                  <div className="text-center py-16">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                      <Search className="h-8 w-8 text-gray-400" />
-                    </div>
-                    <p className="text-sm font-medium text-gray-900">No setters found</p>
-                    <p className="text-xs text-gray-500 mt-1">Try adjusting your search</p>
+                          
+                          <div className="flex-1 min-w-0 ml-3">
+                            <p className={`text-sm font-semibold truncate transition-colors ${
+                              isSelected ? 'text-blue-900' : 'text-gray-900'
+                            }`}>
+                              {userName}
+                            </p>
+                            <p className="text-xs text-gray-500 truncate mt-0.5">
+                              {userEmail}
+                            </p>
+                          </div>
+                          
+                          {isSelected && (
+                            <CheckCircle className="h-4 w-4 text-blue-600 flex-shrink-0 ml-2" strokeWidth={2} />
+                          )}
+                        </label>
+                      );
+                    })}
                   </div>
-                )}
+
+                  {filteredSetters.length === 0 && (
+                    <div className="text-center py-12">
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                        <Search className="h-8 w-8 text-gray-400" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-900">No setters found</p>
+                      <p className="text-xs text-gray-500 mt-1">Try adjusting your search</p>
+                    </div>
+                  )}
+                </div>
               </>
             )}
           </div>
 
           {/* Purchase Results for Setters */}
           {bulkSetterPurchaseMutation.isSuccess && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="modern-card border border-green-300 p-4">
               <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 mr-3" />
+                <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 mr-3" strokeWidth={2} />
                 <div>
                   <p className="font-semibold text-green-900">Bulk Purchase Successful!</p>
                   <p className="text-sm text-green-700 mt-1">
@@ -477,9 +485,9 @@ export default function BulkPurchase() {
           )}
 
           {bulkSetterPurchaseMutation.isError && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="modern-card border border-red-300 p-4">
               <div className="flex items-start">
-                <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-3" />
+                <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-3" strokeWidth={2} />
                 <div>
                   <p className="font-semibold text-red-900">Purchase Failed</p>
                   <p className="text-sm text-red-700 mt-1">
@@ -494,7 +502,7 @@ export default function BulkPurchase() {
 
       {/* Recent Purchases Summary */}
       {recentPurchases.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
+        <div className="modern-card p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-sm font-semibold text-gray-900">Recent Purchases</h3>
@@ -568,7 +576,7 @@ export default function BulkPurchase() {
       {purchaseMode === 'states' && (
         <>
           {/* Purchase Summary */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="modern-card p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-900 font-semibold">
@@ -581,7 +589,7 @@ export default function BulkPurchase() {
               <button
                 onClick={handlePurchase}
                 disabled={selectedStates.length === 0 || purchaseMutation.isPending}
-                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center text-sm font-semibold transition-colors shadow-sm"
+                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-md"
               >
                 {purchaseMutation.isPending ? (
                   <>
@@ -599,84 +607,92 @@ export default function BulkPurchase() {
           </div>
 
           {/* Search & Select All */}
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search states..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              <button
-                onClick={handleSelectAll}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-              >
-                {selectedStates.length === statesData?.states.length ? 'Deselect All' : 'Select All'}
-              </button>
+          <div className="modern-card p-4 space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search states..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="modern-input w-full pl-10 pr-10 py-2.5 text-sm"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-900 text-sm transition-colors"
+                >
+                  ✕
+                </button>
+              )}
             </div>
+            <button
+              onClick={handleSelectAll}
+              className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            >
+              {selectedStates.length === statesData?.states.length ? 'Deselect All' : 'Select All'}
+            </button>
           </div>
 
           {/* States Grid */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
-              {filteredStates.map((state) => (
-                <label
-                  key={state.name}
-                  className={`group relative flex items-center px-3.5 py-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                    selectedStates.includes(state.name)
-                      ? 'bg-gradient-to-br from-blue-50 to-blue-100/50 border-l-4 border-blue-500 shadow-sm'
-                      : 'bg-white border border-gray-200 hover:border-blue-400 hover:shadow-md hover:-translate-y-0.5'
-                  }`}
-                >
-                  <div className={`flex-shrink-0 mr-3 p-1.5 rounded-md transition-colors ${
-                    selectedStates.includes(state.name) ? 'bg-blue-500' : 'bg-gray-100 group-hover:bg-blue-100'
-                  }`}>
-                    <input
-                      type="checkbox"
-                      checked={selectedStates.includes(state.name)}
-                      onChange={() => handleStateToggle(state.name)}
-                      className="h-3.5 w-3.5 text-blue-600 border-0 rounded focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
-                    />
-                  </div>
+          <div className="modern-card overflow-hidden">
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
+                {filteredStates.map((state) => {
+                  const isSelected = selectedStates.includes(state.name);
                   
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-semibold truncate transition-colors ${
-                      selectedStates.includes(state.name) ? 'text-blue-900' : 'text-gray-900 group-hover:text-blue-700'
-                    }`}>
-                      {state.name}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      {state.areaCodes.length} area code{state.areaCodes.length !== 1 ? 's' : ''}
-                    </p>
-                  </div>
-                  
-                  {selectedStates.includes(state.name) && (
-                    <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0 ml-2" strokeWidth={2.5} />
-                  )}
-                </label>
-              ))}
-            </div>
-
-            {filteredStates.length === 0 && (
-              <div className="text-center py-16">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                  <Search className="h-8 w-8 text-gray-400" />
-                </div>
-                <p className="text-sm font-medium text-gray-900">No states found</p>
-                <p className="text-xs text-gray-500 mt-1">Try adjusting your search</p>
+                  return (
+                    <label
+                      key={state.name}
+                      className={`group relative flex items-center px-3.5 py-3 rounded-lg cursor-pointer transition-all ${
+                        isSelected
+                          ? 'bg-blue-50'
+                          : 'bg-white border border-gray-200 hover:bg-gray-50'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => handleStateToggle(state.name)}
+                        className="h-4 w-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 transition-colors"
+                      />
+                      
+                      <div className="flex-1 min-w-0 ml-3">
+                        <p className={`text-sm font-semibold truncate transition-colors ${
+                          isSelected ? 'text-blue-900' : 'text-gray-900'
+                        }`}>
+                          {state.name}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {state.areaCodes.length} area code{state.areaCodes.length !== 1 ? 's' : ''}
+                        </p>
+                      </div>
+                      
+                      {isSelected && (
+                        <CheckCircle className="h-4 w-4 text-blue-600 flex-shrink-0 ml-2" strokeWidth={2} />
+                      )}
+                    </label>
+                  );
+                })}
               </div>
-            )}
+
+              {filteredStates.length === 0 && (
+                <div className="text-center py-12">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                    <Search className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <p className="text-sm font-medium text-gray-900">No states found</p>
+                  <p className="text-xs text-gray-500 mt-1">Try adjusting your search</p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Purchase Results */}
           {purchaseMutation.isSuccess && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="modern-card border border-green-300 p-4">
               <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 mr-3" />
+                <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 mr-3" strokeWidth={2} />
                 <div>
                   <p className="font-semibold text-green-900">Purchase Successful!</p>
                   <p className="text-sm text-green-700 mt-1">
@@ -693,9 +709,9 @@ export default function BulkPurchase() {
           )}
 
           {purchaseMutation.isError && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="modern-card border border-red-300 p-4">
               <div className="flex items-start">
-                <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-3" />
+                <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-3" strokeWidth={2} />
                 <div>
                   <p className="font-semibold text-red-900">Purchase Failed</p>
                   <p className="text-sm text-red-700 mt-1">

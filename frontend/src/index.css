@@ -3,6 +3,22 @@
 @tailwind utilities;
 
 /* ================================
+   LUXURY FONTS IMPORT
+   ================================ */
+
+/* Luxury Serif - Playfair Display */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
+/* Elegant Serif - Cormorant Garamond */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
+
+/* Modern Luxury - Montserrat */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+/* Clean Premium - Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+/* ================================
    MODERN CLEAN THEME
    White background with blue-teal gradient accents
    ================================ */
@@ -23,12 +39,25 @@
   body {
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     /* Clean white background */
     background: #ffffff;
     color: #0f172a;
     min-height: 100vh;
     overflow-x: hidden;
+  }
+
+  /* Luxury heading styles */
+  h1, h2, h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   /* Reduce motion for accessibility */
@@ -112,6 +141,69 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.08);
     border-color: rgba(45, 212, 191, 0.4);
+  }
+}
+
+/* ================================
+   LUXURY TYPOGRAPHY UTILITIES
+   ================================ */
+
+@layer utilities {
+  /* Luxury Display Text */
+  .text-luxury {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  /* Elegant Serif */
+  .text-elegant {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1.6;
+  }
+
+  /* Premium Sans */
+  .text-premium {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /* Clean Modern */
+  .text-modern {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  /* Gold Gradient Text */
+  .text-gold {
+    background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #F4E5B2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Platinum Gradient Text */
+  .text-platinum {
+    background: linear-gradient(135deg, #E5E4E2 0%, #FFFFFF 50%, #C0C0C0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Wide Luxury Spacing */
+  .tracking-luxury {
+    letter-spacing: 0.15em;
+  }
+
+  /* Tight Luxury Spacing */
+  .tracking-tight-luxury {
+    letter-spacing: -0.03em;
   }
 }
 
@@ -217,6 +309,22 @@
   .hover-scale:hover {
     transform: scale(1.03);
   }
+
+  /* Fade In Animation */
+  .fade-in {
+    animation: fadeIn 0.6s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 /* ================================
@@ -257,6 +365,7 @@
     border-radius: 0.625rem;
     padding: 0.75rem 1rem;
     color: #0f172a;
+    font-family: 'Inter', sans-serif;
     transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -294,9 +403,10 @@
     border: none;
     border-radius: 0.625rem;
     padding: 0.75rem 1.5rem;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: 0.875rem;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.02em;
     transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(79, 70, 229, 0.15);
@@ -323,9 +433,10 @@
     border: none;
     border-radius: 0.625rem;
     padding: 0.75rem 1.5rem;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: 0.875rem;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.02em;
     transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(20, 184, 166, 0.15);
@@ -384,6 +495,11 @@
 
   .text-shadow-lg {
     text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Luxury Text Shadow */
+  .text-shadow-luxury {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   /* Backdrop Blur Utilities */

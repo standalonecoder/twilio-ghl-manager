@@ -88,6 +88,42 @@ export default {
           900: '#7f1d1d',
         },
       },
+      // Luxury Font Families
+      fontFamily: {
+        // Luxury Display Font (Big Headings)
+        'display': ['Playfair Display', 'Georgia', 'serif'],
+        
+        // Premium Heading Font
+        'heading': ['Montserrat', 'sans-serif'],
+        
+        // Elegant Body Font
+        'elegant': ['Cormorant Garamond', 'Georgia', 'serif'],
+        
+        // Clean Modern Body Font
+        'body': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        
+        // Default Sans
+        'sans': [
+          'Inter',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+        ],
+        
+        // Monospace
+        'mono': [
+          'SF Mono',
+          'Monaco',
+          'Inconsolata',
+          'Fira Code',
+          'Dank Mono',
+          'monospace',
+        ],
+      },
       // Apple-Inspired Typography Scale
       fontSize: {
         xs: ['0.8125rem', { lineHeight: '1.25rem', letterSpacing: '0.01em' }],
@@ -103,24 +139,11 @@ export default {
         '7xl': ['4.5rem', { lineHeight: '1', letterSpacing: '-0.02em' }],
         '8xl': ['5.25rem', { lineHeight: '1', letterSpacing: '-0.02em' }],
       },
-      fontFamily: {
-        sans: [
-          '-apple-system',
-          'BlinkMacSystemFont',
-          'Segoe UI',
-          'Roboto',
-          'Helvetica Neue',
-          'Arial',
-          'sans-serif',
-        ],
-        mono: [
-          'SF Mono',
-          'Monaco',
-          'Inconsolata',
-          'Fira Code',
-          'Dank Mono',
-          'monospace',
-        ],
+      // Luxury Letter Spacing
+      letterSpacing: {
+        'luxury': '0.15em',
+        'tight-luxury': '-0.03em',
+        'relaxed-luxury': '0.05em',
       },
       // Consistent Border Radius System
       borderRadius: {
@@ -144,6 +167,7 @@ export default {
         'depth-sm': '0 1px 3px rgba(15, 23, 42, 0.12), 0 1px 2px rgba(15, 23, 42, 0.08)',
         'depth-md': '0 4px 6px rgba(15, 23, 42, 0.1), 0 2px 4px rgba(15, 23, 42, 0.06)',
         'depth-lg': '0 10px 15px rgba(15, 23, 42, 0.12), 0 4px 6px rgba(15, 23, 42, 0.08)',
+        'luxury': '0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 10px rgba(0, 0, 0, 0.05)',
       },
       // Advanced Animations
       animation: {

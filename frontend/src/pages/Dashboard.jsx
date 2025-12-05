@@ -137,7 +137,7 @@ export default function Dashboard() {
       >
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <h3 className="text-xl font-heading font-semibold text-gray-900">
               <Phone className="h-5 w-5 text-accent-500" />
               Recent Numbers (Database)
             </h3>
