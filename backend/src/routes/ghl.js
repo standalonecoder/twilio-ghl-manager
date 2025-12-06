@@ -7,21 +7,75 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 // GET /api/ghl/users
-// 1st try to read from DB (GHLUser table). If empty, fallback to live GHL API.
+// Fetch fresh users from GHL API, sync to DB, then return from DB (with createdAt timestamps)
 router.get('/users', async (req, res) => {
   try {
-    const dbUsers = await prisma.gHLUser.findMany({
-      orderBy: { name: 'asc' },
-    });
-
-    if (dbUsers.length > 0) {
-      return res.json({ success: true, users: dbUsers, source: 'db' });
-    }
-
+    // Always fetch fresh data from GHL API
     const apiUsers = await ghlService.getUsers();
-    return res.json({ success: true, users: apiUsers, source: 'ghl-api' });
+    
+    // Sync all users to database (add new ones, update existing)
+    for (const user of apiUsers) {
+      const ghlUserId = user.id || user.userId || user._id;
+      if (!ghlUserId) continue;
+
+      const name =
+        user.name ||
+        `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
+        'Unknown';
+
+      const existing = await prisma.gHLUser.findUnique({
+        where: { ghlUserId },
+      });
+
+      if (existing) {
+        // Update existing user
+        await prisma.gHLUser.update({
+          where: { ghlUserId },
+          data: {
+            name,
+            email: user.email || null,
+            role: user.role || null,
+            lastSyncedAt: new Date(),
+          },
+        });
+      } else {
+        // Create new user (createdAt will be set automatically)
+        await prisma.gHLUser.create({
+          data: {
+            ghlUserId,
+            name,
+            email: user.email || null,
+            role: user.role || null,
+            assignedNumbers: null,
+            lastSyncedAt: new Date(),
+          },
+        });
+      }
+    }
+    
+    // Return users from DB (with createdAt and updatedAt timestamps)
+    const dbUsers = await prisma.gHLUser.findMany({
+      orderBy: { createdAt: 'desc' }, // Newest first
+    });
+    
+    return res.json({ success: true, users: dbUsers, source: 'db-synced' });
   } catch (error) {
     console.error('GET /api/ghl/users error:', error);
+    
+    // Fallback to DB if GHL API fails
+    try {
+      const dbUsers = await prisma.gHLUser.findMany({
+        orderBy: { createdAt: 'desc' },
+      });
+      
+      if (dbUsers.length > 0) {
+        console.log('⚠️ Using cached users from DB (GHL API failed)');
+        return res.json({ success: true, users: dbUsers, source: 'db-fallback' });
+      }
+    } catch (dbError) {
+      console.error('DB fallback also failed:', dbError);
+    }
+    
     res.status(500).json({ error: error.message });
   }
 });

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { numbersApi, ghlApi } from '../services/api';
-import { ShoppingCart, Loader2, CheckCircle, AlertCircle, Search, Phone, Users } from 'lucide-react';
+import { ShoppingCart, Loader2, CheckCircle, AlertCircle, Search, Phone, Users, RefreshCw } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 
 
@@ -22,13 +22,15 @@ export default function BulkPurchase() {
   });
 
   // Fetch GHL users for setter purchase
-  const { data: usersData, isLoading: usersLoading } = useQuery({
+  const { data: usersData, isLoading: usersLoading, refetch: refetchUsers } = useQuery({
     queryKey: ['ghl-users'],
     queryFn: async () => {
       const response = await ghlApi.getUsers();
       return response.data;
     },
-    enabled: purchaseMode === 'setter'
+    enabled: purchaseMode === 'setter',
+    refetchInterval: 30000, // Auto-refresh every 30 seconds
+    staleTime: 20000 // Consider data stale after 20 seconds
   });
 
   const queryClient = useQueryClient();
@@ -131,6 +133,19 @@ export default function BulkPurchase() {
     },
     onError: (error) => {
       alert(`Failed: ${error.response?.data?.error || error.message}`);
+    }
+  });
+
+  // Sync GHL users mutation (to get latest users from GHL)
+  const syncUsersMutation = useMutation({
+    mutationFn: () => ghlApi.syncUsers(),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['ghl-users']);
+      const totals = data.data.totals;
+      alert(`✅ Users Synced!\n\nAdded: ${totals.added} new users\nUpdated: ${totals.updated} existing users\nTotal from GHL: ${totals.fromApi}`);
+    },
+    onError: (error) => {
+      alert(`❌ Sync Failed: ${error.response?.data?.error || error.message}`);
     }
   });
 
@@ -390,12 +405,41 @@ export default function BulkPurchase() {
                 </button>
               )}
             </div>
-            <button
-              onClick={handleSelectAllSetters}
-              className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-            >
-              {selectedSetters.length === (usersData?.users || []).length ? 'Deselect All' : 'Select All'}
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleSelectAllSetters}
+                className="flex-1 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              >
+                {selectedSetters.length === (usersData?.users || []).length ? 'Deselect All' : 'Select All'}
+              </button>
+              
+              <button
+                onClick={() => syncUsersMutation.mutate()}
+                disabled={syncUsersMutation.isPending}
+                className="px-4 py-2 text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium shadow-sm hover:shadow flex items-center gap-2"
+                title="Sync latest users from GHL"
+              >
+                {syncUsersMutation.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
+                    Syncing...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="h-4 w-4" strokeWidth={2} />
+                    Sync Users
+                  </>
+                )}
+              </button>
+            </div>
+            
+            {/* Last sync indicator */}
+            {usersData?.source === 'db' && (
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span>Auto-refreshing every 30s • Click "Sync Users" for immediate update</span>
+              </div>
+            )}
           </div>
 
           {/* Setters Grid */}
@@ -492,6 +536,41 @@ export default function BulkPurchase() {
                   <p className="font-semibold text-red-900">Purchase Failed</p>
                   <p className="text-sm text-red-700 mt-1">
                     {bulkSetterPurchaseMutation.error?.response?.data?.error || bulkSetterPurchaseMutation.error?.message}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Sync Users Success */}
+          {syncUsersMutation.isSuccess && (
+            <div className="modern-card border border-green-300 p-4">
+              <div className="flex items-start">
+                <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 mr-3" strokeWidth={2} />
+                <div>
+                  <p className="font-semibold text-green-900">Users Synced Successfully!</p>
+                  <p className="text-sm text-green-700 mt-1">
+                    {syncUsersMutation.data?.data.totals.added > 0 && (
+                      <span>✨ {syncUsersMutation.data?.data.totals.added} new user(s) added • </span>
+                    )}
+                    {syncUsersMutation.data?.data.totals.updated > 0 && (
+                      <span>🔄 {syncUsersMutation.data?.data.totals.updated} user(s) updated • </span>
+                    )}
+                    <span>Total: {syncUsersMutation.data?.data.totals.fromApi} users from GHL</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {syncUsersMutation.isError && (
+            <div className="modern-card border border-red-300 p-4">
+              <div className="flex items-start">
+                <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-3" strokeWidth={2} />
+                <div>
+                  <p className="font-semibold text-red-900">Sync Failed</p>
+                  <p className="text-sm text-red-700 mt-1">
+                    {syncUsersMutation.error?.response?.data?.error || syncUsersMutation.error?.message}
                   </p>
                 </div>
               </div>

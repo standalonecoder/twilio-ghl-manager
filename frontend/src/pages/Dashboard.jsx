@@ -1,273 +1,290 @@
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { numbersApi, analyticsApi, ghlApi } from '../services/api';
-import { Phone, TrendingUp, AlertCircle, Activity, Users, Sparkles } from 'lucide-react';
-import { StatCard } from '../components/Card';
-import Badge, { StatusBadge } from '../components/Badge';
+import { numbersApi, ghlApi } from '../services/api';
+import { UserPlus, ShoppingCart, TrendingUp, ArrowRight, Clock } from 'lucide-react';
 
 export default function Dashboard() {
-  const { data: numbersData, isLoading: numbersLoading } = useQuery({
+  // Fetch numbers to check for recent purchases
+  const { data: numbersData } = useQuery({
     queryKey: ['numbers'],
     queryFn: async () => {
       const response = await numbersApi.getAllNumbers();
       return response.data;
-    }
+    },
+    refetchInterval: 10000
   });
 
-  const { data: analyticsData, isLoading: analyticsLoading } = useQuery({
-    queryKey: ['analytics-overview'],
+  // Fetch GHL users to check for new accounts
+  const { data: ghlUsersData } = useQuery({
+    queryKey: ['ghl-users-dashboard'],
     queryFn: async () => {
-      const response = await analyticsApi.getOverview();
+      const response = await ghlApi.getUsers();
       return response.data;
-    }
+    },
+    refetchInterval: 30000
   });
 
-  const { data: ghlNumbersData, isLoading: ghlLoading } = useQuery({
-    queryKey: ['ghl-phone-numbers'],
-    queryFn: async () => {
-      const response = await ghlApi.getPhoneNumbers();
-      return response.data;
-    }
-  });
+  const ghlUsers = ghlUsersData?.users || [];
+  
+  // Get NEW accounts added in last 24 hours
+  const newAccounts = ghlUsers.filter(user => {
+    if (!user.createdAt) return false;
+    const createdDate = new Date(user.createdAt);
+    const now = new Date();
+    const hoursDiff = (now - createdDate) / (1000 * 60 * 60);
+    return hoursDiff <= 24;
+  }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
+  // Get recent purchases (last 24 hours)
+  const recentPurchases = (numbersData?.numbers || [])
+    .filter(num => {
+      const purchaseDate = new Date(num.dateCreated);
+      const now = new Date();
+      const hoursDiff = (now - purchaseDate) / (1000 * 60 * 60);
+      return hoursDiff <= 24;
+    })
+    .sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
 
-  const stats = [
-    {
-      label: 'Total Numbers (DB)',
-      value: numbersData?.count || 0,
-      icon: Phone,
-      color: 'brand',
-      trend: 'up',
-      trendValue: '+12%'
-    },
-    {
-      label: 'Total Calls',
-      value: analyticsData?.stats.totalCalls || 0,
-      icon: Activity,
-      color: 'brand',
-      trend: 'up',
-      trendValue: '+8%'
-    },
-    {
-      label: 'Success Rate',
-      value: `${analyticsData?.stats.successRate || 0}%`,
-      icon: TrendingUp,
-      color: 'success',
-      trend: 'up',
-      trendValue: '+3.2%'
-    },
-    {
-      label: 'Failed Calls',
-      value: analyticsData?.stats.failed || 0,
-      icon: AlertCircle,
-      color: 'danger',
-      trend: 'down',
-      trendValue: '-5%'
-    }
-  ];
-
-  const ghlNumbers = Array.isArray(ghlNumbersData?.numbers) 
-    ? ghlNumbersData.numbers 
-    : Array.isArray(ghlNumbersData) 
-    ? ghlNumbersData 
-    : [];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
-    }
+  const formatTimeAgo = (date) => {
+    const now = new Date();
+    const diffMs = now - new Date(date);
+    const diffMins = Math.round(diffMs / (1000 * 60));
+    const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return 'Today';
   };
 
   return (
-    <div className="min-h-screen p-6 space-y-8">
-      {/* Hero Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="relative overflow-hidden rounded-2xl p-8 bg-white border border-gray-200"
-      >
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-2">
-            <Sparkles className="h-8 w-8 text-accent-500" />
-            <h1 className="text-4xl font-bold gradient-text-primary">
-              Dashboard
-            </h1>
-          </div>
-          <p className="text-lg text-gray-600">
-            Overview of your Twilio–GHL system performance
-          </p>
-        </div>
-        
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-accent-500/10 to-primary-600/10 rounded-full blur-3xl -z-10" />
-      </motion.div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
+        <p className="text-gray-600 mt-1">Monitor your Twilio-GHL system activity</p>
+      </div>
 
-      {/* Stats Grid */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-      >
-        {stats.map((stat, index) => (
-          <motion.div key={stat.label} variants={itemVariants}>
-            <StatCard {...stat} animate={true} />
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* Recent Numbers from DB */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="modern-card overflow-hidden"
-      >
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <div>
-            <h3 className="text-xl font-heading font-semibold text-gray-900">
-              <Phone className="h-5 w-5 text-accent-500" />
-              Recent Numbers (Database)
-            </h3>
-            <p className="text-sm text-gray-600 mt-1">
-              Latest numbers from your Twilio account
-            </p>
-          </div>
-          <StatusBadge status="active" />
-        </div>
-        
-        <div className="p-6">
-          {numbersLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="loading-spinner h-8 w-8" />
+      {/* Stats Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Total Users */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">New Accounts Today</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">{newAccounts.length}</p>
+              <div className="flex items-center gap-1 mt-2">
+                <span className="text-sm font-medium text-gray-500">
+                  Total: {ghlUsers.length}
+                </span>
+              </div>
             </div>
-          ) : numbersData?.numbers && numbersData.numbers.length > 0 ? (
-            <div className="space-y-3">
-              {numbersData.numbers.slice(0, 5).map((number, index) => (
-                <motion.div
-                  key={number.sid}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05, duration: 0.3 }}
-                  className="flex items-center justify-between py-3 px-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all duration-300 border border-gray-200"
+            <div className="h-12 w-12 rounded-full bg-blue-50 flex items-center justify-center">
+              <UserPlus className="h-6 w-6 text-blue-600" />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Numbers Purchased */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Purchased in 24h</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">{recentPurchases.length}</p>
+              <div className="flex items-center gap-1 mt-2">
+                <span className="text-sm font-medium text-gray-500">
+                  Total: {numbersData?.count || 0}
+                </span>
+              </div>
+            </div>
+            <div className="h-12 w-12 rounded-full bg-green-50 flex items-center justify-center">
+              <ShoppingCart className="h-6 w-6 text-green-600" />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Activity Status */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">System Status</p>
+              <p className="text-3xl font-bold text-green-600 mt-2">Active</p>
+              <div className="flex items-center gap-1 mt-2">
+                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span className="text-sm font-medium text-gray-600">
+                  Auto-syncing
+                </span>
+              </div>
+            </div>
+            <div className="h-12 w-12 rounded-full bg-green-50 flex items-center justify-center">
+              <Clock className="h-6 w-6 text-green-600" />
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Activity Feed */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {/* New Accounts Feed */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          className="bg-white rounded-xl border border-gray-200 overflow-hidden"
+        >
+          <div className="px-6 py-4 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">New Accounts</h3>
+                <p className="text-sm text-gray-600 mt-0.5">Added in last 24 hours</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold text-gray-900">{newAccounts.length}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6">
+            {newAccounts.length > 0 ? (
+              <div className="space-y-3">
+                {newAccounts.map((user, index) => {
+                  const userName = user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim();
+                  const timeAgo = formatTimeAgo(user.createdAt);
+                  
+                  return (
+                    <motion.div
+                      key={user.id || index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
+                          {userName.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{userName}</p>
+                          <p className="text-sm text-gray-600">{user.email || 'No email'}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium text-gray-900">{timeAgo}</p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
+                  <UserPlus className="h-6 w-6 text-gray-400" />
+                </div>
+                <p className="text-gray-600 font-medium">No new accounts</p>
+                <p className="text-sm text-gray-500 mt-1">Check back later</p>
+              </div>
+            )}
+
+            {newAccounts.length > 0 && (
+              <div className="mt-6 pt-4 border-t border-gray-100">
+                <a 
+                  href="/bulk-purchase"
+                  className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-lg bg-primary-100">
-                      <Phone className="h-4 w-4 text-accent-500" />
-                    </div>
-                    <div>
-                      <p className="font-mono font-semibold text-gray-900 text-base">
-                        {number.phoneNumber}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {number.friendlyName || 'No name assigned'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-600">
-                      {new Date(number.purchaseDate).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <Phone className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600">No numbers found in database</p>
-            </div>
-          )}
-        </div>
-      </motion.div>
-
-      {/* GHL Numbers Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="modern-card overflow-hidden"
-      >
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-              <Users className="h-5 w-5 text-accent-500" />
-              GHL Numbers
-            </h3>
-            <p className="text-sm text-gray-600 mt-1">
-              Directly from GHL API – with friendly names & staff assignments
-            </p>
+                  <span>Assign Numbers</span>
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              </div>
+            )}
           </div>
-          <Badge variant="success" dot pulse>
-            {ghlNumbers.length} numbers
-          </Badge>
-        </div>
-        
-        <div className="p-6">
-          {ghlLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="loading-spinner h-8 w-8" />
+        </motion.div>
+
+        {/* Recent Purchases Feed */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.4 }}
+          className="bg-white rounded-xl border border-gray-200 overflow-hidden"
+        >
+          <div className="px-6 py-4 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Recent Purchases</h3>
+                <p className="text-sm text-gray-600 mt-0.5">Numbers purchased in 24h</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold text-gray-900">{recentPurchases.length}</span>
+              </div>
             </div>
-          ) : ghlNumbers.length > 0 ? (
-            <div className="space-y-3">
-              {ghlNumbers.slice(0, 10).map((num, index) => (
-                <motion.div
-                  key={num.id || num.phoneNumber || index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05, duration: 0.3 }}
-                  className="flex items-center justify-between py-3 px-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all duration-300 border border-gray-200"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-lg bg-accent-100">
-                      <Phone className="h-4 w-4 text-accent-600" />
-                    </div>
-                    <div>
-                      <p className="font-mono font-semibold text-gray-900 text-base">
-                        {num.phoneNumber || num.number || 'Unknown'}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {num.friendlyName || num.name || 'No friendly name'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Badge variant="brand" size="sm">
-                      {num.assignedUserName || num.assignedTo || 'Unassigned'}
-                    </Badge>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <Users className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600">
-                No GHL numbers found or API not returning data yet
-              </p>
-              <p className="text-sm text-gray-500 mt-2">
-                Check your GHL integration settings
-              </p>
-            </div>
-          )}
-        </div>
-      </motion.div>
+          </div>
+
+          <div className="p-6">
+            {recentPurchases.length > 0 ? (
+              <div className="space-y-3">
+                {recentPurchases.slice(0, 8).map((number, index) => {
+                  const timeAgo = formatTimeAgo(number.dateCreated);
+                  
+                  return (
+                    <motion.div
+                      key={number.sid}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+                          <ShoppingCart className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-mono font-semibold text-gray-900">{number.phoneNumber}</p>
+                          <p className="text-sm text-gray-600">{number.friendlyName || 'No name assigned'}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium text-gray-900">{timeAgo}</p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
+                  <ShoppingCart className="h-6 w-6 text-gray-400" />
+                </div>
+                <p className="text-gray-600 font-medium">No recent purchases</p>
+                <p className="text-sm text-gray-500 mt-1">Start by purchasing numbers</p>
+              </div>
+            )}
+
+            {recentPurchases.length > 8 && (
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-600">
+                  +{recentPurchases.length - 8} more purchases
+                </p>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+      </div>
     </div>
   );
 }
